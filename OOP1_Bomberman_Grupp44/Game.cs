@@ -21,6 +21,6 @@ class Game
 
     public void DrawEverything()
     {
-        
+        Console.WriteLine("öhhh");
     }
 }
