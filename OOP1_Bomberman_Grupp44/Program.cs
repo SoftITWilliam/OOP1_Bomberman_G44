@@ -10,12 +10,13 @@ public class Program
         
         Game game = new Game();
 
-        Player p1 = new Player(0, 0, 
-            new KeyboardControlScheme(ControlType.Wasd)) 
+
+        Player p1 = new Player(0, 0, new KeyboardControlScheme(ControlType.Wasd)) 
         { 
             Name = "Human", 
             Color = ConsoleColor.Blue 
         };
+
         Player p2 = new Player(Game.LevelWidth - 1, Game.LevelHeight - 1, 
             new KeyboardControlScheme(ControlType.Arrows)) 
         { 

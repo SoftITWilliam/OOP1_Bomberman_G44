@@ -14,7 +14,7 @@ class Player : IDrawable
         (X, Y) = (startX, startY);
         this.controls = controls;
     }
-    
+
     public void HandleInput(IEnumerable<string> keys)
     {
         var (dx, dy, placedBomb) = controls.GetDirection(keys);
@@ -24,6 +24,11 @@ class Player : IDrawable
 
         if (Y + dy >= 0 && Y + dy < Game.LevelHeight)
             Y += dy;
+    }
+    
+    public void PlaceBomb()
+    {
+        
     }
 
     public void DrawLine1()
