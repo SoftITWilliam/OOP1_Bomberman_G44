@@ -9,11 +9,11 @@ class DestructibleBlock : IBlock
         this.x = X;
         this.y = Y;
     }
-    public int X { get => x; }
-    public int Y { get => y; }
+    public int X => x; 
+    public int Y  => y; 
 
-    public bool Collidible => isDestroyed == false;
     private bool isDestroyed = false;
+    public bool Collidible => isDestroyed == false;
 
     public void Destroy()
     {
