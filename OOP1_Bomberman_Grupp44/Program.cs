@@ -10,22 +10,26 @@ public class Program
         
         Game game = new Game();
 
-        Player p1 = new Player(0, 0) 
+        Player p1 = new Player(0, 0, new KeyboardControlScheme(ControlType.Wasd)) 
         { 
             Name = "Human", 
             Color = ConsoleColor.Blue 
         };
-        Player p2 = new Player(Game.LevelWidth - 1, Game.LevelHeight - 1) 
-        { 
-            Name = "Bot", 
-            Color = ConsoleColor.Red 
+        Player p2 = new Player(Game.LevelWidth - 1, Game.LevelHeight - 1,
+        new KeyboardControlScheme(ControlType.Arrows))
+        {
+            Name = "Bot",
+            Color = ConsoleColor.Red
         };
+    
         game.AddPlayer(p1);
         game.AddPlayer(p2);
 
         game.CreateLevel_Placeholder();
 
 
+        game.DrawEverything();
+        p2.Update();
         game.DrawEverything();
     }
 }

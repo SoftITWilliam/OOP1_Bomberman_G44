@@ -14,12 +14,17 @@ class Player : IDrawable
         (X, Y) = (startX, startY);
         this.controls = controls;
     }
-    
+
     public void Update()
     {
         var (dx, dy, placedBomb) = controls.GetDirection();
         X += dx;
         Y += dy;
+    }
+    
+    public void PlaceBomb()
+    {
+        
     }
 
     public void DrawLine1()
