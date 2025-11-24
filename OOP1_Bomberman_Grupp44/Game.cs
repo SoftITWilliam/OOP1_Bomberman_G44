@@ -48,10 +48,27 @@ class Game
         }
         Console.Write(Environment.NewLine);
 
-        // Rita alla block
+        // Rita alla spelets rader
+        // Varje ruta i spelet är 3x7 i ascii, så varje rad måste ritas 3 gånger.
         for (int y = 0; y < LevelHeight; y++)
         {
-            DrawRow(y);
+            // Ram - vänster sida
+            Console.Write("█");
+
+            drawLine(y, 1);
+
+            // Ram - höger + vänster sida
+            Console.Write("█" + Environment.NewLine + "█");
+
+            drawLine(y, 2);
+            
+            // Ram - höger + vänster sida
+            Console.Write("█" + Environment.NewLine + "█");
+
+            drawLine(y, 3);
+
+            // Ram - höger sida
+            Console.Write("█" + Environment.NewLine);
         }
 
         // Ram - bottenrad
@@ -62,73 +79,38 @@ class Game
         Console.Write(Environment.NewLine);
     }
 
-    private void DrawRow(int y)
+    private void drawLine(int y, int line) 
     {
         // Draw-processen ska se ut så här när spelet är färdigt:
         // if: Explosion
         // else if: Spelare
         // else if: Block
         // else: Tomt utrymme
-
-        // Ram - vänster sida
-        Console.Write("█");
-
+        
         for (int x = 0; x < LevelWidth; x++)
         {
             if (TryGetPlayerAt(x, y, out var player))
             {
-                player.DrawLine1();
+                draw(player, line);
             }
             else if (TryGetBlockAt(x, y, out var block))
             {
-                block.DrawLine1();
+                draw(block, line);
             }
             else
             {
                 Console.Write(EmptyBlock);
             }
         }
-
-        // Ram - höger + vänster sida
-        Console.Write("█" + Environment.NewLine + "█");
-
-        for (int x = 0; x < LevelWidth; x++)
+    }
+    private void draw(IDrawable drawable, int n)
+    {
+        switch (n)
         {
-            if (TryGetPlayerAt(x, y, out var player))
-            {
-                player.DrawLine2();
-            }
-            else if (TryGetBlockAt(x, y, out var block))
-            {
-                block.DrawLine2();
-            }
-            else
-            {
-                Console.Write(EmptyBlock);
-            }
+            case 1: drawable.DrawLine1(); break;
+            case 2: drawable.DrawLine2(); break;
+            case 3: drawable.DrawLine3(); break;
         }
-
-        // Ram - höger + vänster sida
-        Console.Write("█" + Environment.NewLine + "█");
-
-        for (int x = 0; x < LevelWidth; x++)
-        {
-            if (TryGetPlayerAt(x, y, out var player))
-            {
-                player.DrawLine3();
-            }
-            else if (TryGetBlockAt(x, y, out var block))
-            {
-                block.DrawLine3();
-            }
-            else
-            {
-                Console.Write(EmptyBlock);
-            }
-        }
-
-        // Ram - höger sida
-        Console.Write("█" + Environment.NewLine);
     }
 
     public bool TryGetBlockAt(int x, int y, 
