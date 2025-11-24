@@ -4,14 +4,22 @@ class Player : IDrawable
 {
     public required string Name { get; init; }
     public required ConsoleColor Color { get; init; }
-    public int X => x;
-    public int Y => y;
+    public int X { get; private set; }
+    public int Y { get; private set; }
 
-    private int x, y;
-    
-    public Player(int x, int y)
+    private readonly IControlScheme controls;
+
+    public Player(int startX, int startY, IControlScheme controls)
     {
-        (this.x, this.y) = (x, y);
+        (X, Y) = (startX, startY);
+        this.controls = controls;
+    }
+    
+    public void Update()
+    {
+        var (dx, dy, placedBomb) = controls.GetDirection();
+        X += dx;
+        Y += dy;
     }
 
     public void DrawLine1()
