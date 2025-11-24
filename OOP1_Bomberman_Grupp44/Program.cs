@@ -9,8 +9,19 @@ public class Program
         
         
         Game game = new Game();
-        game.AddPlayer(new HumanPlayer() { Name = "Human" });
-        game.AddPlayer(new AIPlayer() { Name = "Bot" });
+
+        Player p1 = new Player(0, 0) 
+        { 
+            Name = "Human", 
+            Color = ConsoleColor.Blue 
+        };
+        Player p2 = new Player(Game.LevelWidth - 1, Game.LevelHeight - 1) 
+        { 
+            Name = "Bot", 
+            Color = ConsoleColor.Red 
+        };
+        game.AddPlayer(p1);
+        game.AddPlayer(p2);
 
         game.CreateLevel_Placeholder();
 

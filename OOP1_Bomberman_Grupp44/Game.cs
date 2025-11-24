@@ -4,14 +4,14 @@ namespace Bomberman;
 
 class Game 
 {
-    private const int LevelWidth = 7;
-    private const int LevelHeight = 5;
+    public const int LevelWidth = 7;
+    public const int LevelHeight = 5;
     private const string EmptyBlock = "       ";
 
-    private List<IPlayer> Players = new List<IPlayer>();
+    private List<Player> Players = new List<Player>();
     private List<IBlock> Blocks = new List<IBlock>();
 
-    public void AddPlayer(IPlayer player) 
+    public void AddPlayer(Player player) 
     {
         Players.Add(player);
         Console.WriteLine($"Added player: {player.Name}");
@@ -75,8 +75,11 @@ class Game
 
         for (int x = 0; x < LevelWidth; x++)
         {
-            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
-            if (TryGetBlockAt(x, y, out var block))
+            if (TryGetPlayerAt(x, y, out var player))
+            {
+                player.DrawLine1();
+            }
+            else if (TryGetBlockAt(x, y, out var block))
             {
                 block.DrawLine1();
             }
@@ -91,8 +94,11 @@ class Game
 
         for (int x = 0; x < LevelWidth; x++)
         {
-            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
-            if (TryGetBlockAt(x, y, out var block))
+            if (TryGetPlayerAt(x, y, out var player))
+            {
+                player.DrawLine2();
+            }
+            else if (TryGetBlockAt(x, y, out var block))
             {
                 block.DrawLine2();
             }
@@ -107,8 +113,11 @@ class Game
 
         for (int x = 0; x < LevelWidth; x++)
         {
-            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
-            if (TryGetBlockAt(x, y, out var block))
+            if (TryGetPlayerAt(x, y, out var player))
+            {
+                player.DrawLine3();
+            }
+            else if (TryGetBlockAt(x, y, out var block))
             {
                 block.DrawLine3();
             }
@@ -127,5 +136,12 @@ class Game
     {
         block = Blocks.Find(b => b.X == x && b.Y == y);
         return block != null;
+    }
+
+    public bool TryGetPlayerAt(int x, int y,
+        [NotNullWhen(true)] out Player? player)
+    {
+        player = Players.Find(p => p.X == x && p.Y == y);
+        return player != null;
     }
 }
