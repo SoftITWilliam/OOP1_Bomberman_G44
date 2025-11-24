@@ -21,7 +21,7 @@ class SolidBlock : IBlock
 
     public void Draw()
     {
-        // to do
+        Console.Write("██");
     }
 }
     

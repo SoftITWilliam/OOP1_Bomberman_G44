@@ -17,12 +17,19 @@ class DestructibleBlock : IBlock
 
     public void Destroy()
     {
-        isDestroyed = false;
+        isDestroyed = true;
     }
 
     public void Draw()
     {
-        // to do
+        if (isDestroyed)
+        {
+            ConsoleUtils.WriteWithColor("░░", ConsoleColor.DarkGray);
+        }
+        else
+        {
+            ConsoleUtils.WriteWithColor("▒▒", ConsoleColor.White);
+        }
     }
  
 }

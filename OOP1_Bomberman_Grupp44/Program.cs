@@ -15,5 +15,6 @@ public class Program
         game.CreateLevel_Placeholder();
 
 
+        game.DrawEverything();
     }
 }
