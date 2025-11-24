@@ -35,29 +35,28 @@ class KeyboardControlScheme : IControlScheme
                 break;
         }
     }
-    public (int dx, int dy, bool placedBomb) GetDirection()
+    public (int dx, int dy, bool placedBomb) GetDirection(IEnumerable<string> keys)
     {
+        var keysList = keys.ToList();
+
         int dx = 0;
         int dy = 0;
         bool placedBomb = false;
 
-        if (!Console.KeyAvailable) return (0, 0, false);
-
-        var key = Console.ReadKey(true).Key;
-
-        if (key == up) dy = 1;
-        if (key == down) dy = -1;
-        if (key == left) dx = -1;
-        if (key == right) dx = 1;
-        if (key == placebomb) placedBomb = true;
+        if (keysList.Contains(up.ToString())) dy = -1;
+        if (keysList.Contains(down.ToString())) dy = 1;
+        if (keysList.Contains(left.ToString())) dx = -1;
+        if (keysList.Contains(right.ToString())) dx = 1;
+        if (keysList.Contains(placebomb.ToString())) placedBomb = true;
 
         return (dx, dy, placedBomb);
     }
+
     /*public bool PlacedBomb() //om man vill ha placed bomb separat?
-    {
-        bool placedBomb = false;
-        var key = Console.ReadKey(true).Key;
-        if (key == placebomb) placedBomb = true;
-        return placedBomb;
-    }*/
+{
+   bool placedBomb = false;
+   var key = Console.ReadKey(true).Key;
+   if (key == placebomb) placedBomb = true;
+   return placedBomb;
+}*/
 }

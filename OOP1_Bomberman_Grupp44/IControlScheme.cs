@@ -1,4 +1,4 @@
 interface IControlScheme
 {
-    public (int dx, int dy, bool placedBomb) GetDirection();
+    public (int dx, int dy, bool placedBomb) GetDirection(IEnumerable<string> keys);
 }

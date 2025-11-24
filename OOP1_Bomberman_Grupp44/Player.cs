@@ -15,11 +15,15 @@ class Player : IDrawable
         this.controls = controls;
     }
     
-    public void Update()
+    public void HandleInput(IEnumerable<string> keys)
     {
-        var (dx, dy, placedBomb) = controls.GetDirection();
-        X += dx;
-        Y += dy;
+        var (dx, dy, placedBomb) = controls.GetDirection(keys);
+
+        if (X + dx >= 0 && X + dx < Game.LevelWidth)
+            X += dx;
+
+        if (Y + dy >= 0 && Y + dy < Game.LevelHeight)
+            Y += dy;
     }
 
     public void DrawLine1()

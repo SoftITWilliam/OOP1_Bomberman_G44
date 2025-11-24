@@ -4,6 +4,9 @@ namespace Bomberman;
 
 class Game 
 {
+    public const int FPS = 10;    
+    public static int FrameDurationMs => 1000 / FPS;
+
     public const int LevelWidth = 7;
     public const int LevelHeight = 5;
     private const string EmptyBlock = "       ";
@@ -37,6 +40,29 @@ class Game
         if (TryGetBlockAt(5, 2, out b)) b.Destroy();
         if (TryGetBlockAt(5, 3, out b)) b.Destroy();
 
+    }
+
+    public void Start()
+    {
+           
+        while (true)
+        {
+            var input = KeyInput.ReadAll();
+
+            foreach (Player player in Players)
+            {
+                player.HandleInput(input);
+            }
+
+            // Tillfällig break condition
+            if (input.Contains(ConsoleKey.Escape.ToString()))
+                break;
+
+            Console.SetCursorPosition(0, 0);
+            //Console.Clear();
+            DrawEverything();
+            Thread.Sleep(FrameDurationMs);
+        }
     }
 
     public void DrawEverything()
