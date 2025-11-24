@@ -19,9 +19,13 @@ class SolidBlock : IBlock
         // Kan inte förstöras - gör ingenting här
     }
 
-    public void Draw()
+    public void DrawLine1() => draw();
+    public void DrawLine2() => draw();
+    public void DrawLine3() => draw();
+
+    private void draw()
     {
-        Console.Write("██");
+        Console.Write("███████");
     }
 }
     

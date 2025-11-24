@@ -6,7 +6,7 @@ class Game
 {
     private const int LevelWidth = 7;
     private const int LevelHeight = 5;
-    private const string EmptyBlock = "  ";
+    private const string EmptyBlock = "       ";
 
     private List<IPlayer> Players = new List<IPlayer>();
     private List<IBlock> Blocks = new List<IBlock>();
@@ -24,7 +24,7 @@ class Game
         Blocks.Add(new SolidBlock(1, 3));
 
         Blocks.Add(new DestructibleBlock(3, 1));
-        Blocks.Add(new DestructibleBlock(3, 2));
+        //Blocks.Add(new DestructibleBlock(3, 2));
         Blocks.Add(new DestructibleBlock(3, 3));
 
         Blocks.Add(new DestructibleBlock(5, 1));
@@ -42,49 +42,84 @@ class Game
     public void DrawEverything()
     {
         // Ram - topprad
-        for (int i = 0; i < LevelWidth + 1; i++) {
-            Console.Write("▄▄");
+        Console.Write("▄▄");
+        for (int i = 0; i < LevelWidth; i++) {
+            Console.Write("▄▄▄▄▄▄▄");
         }
         Console.Write(Environment.NewLine);
 
         // Rita alla block
         for (int y = 0; y < LevelHeight; y++)
         {
-            // Ram - vänster sida
-            Console.Write("█");
-
-            for (int x = 0; x < LevelWidth; x++)
-            {
-                // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
-                if (TryGetBlockAt(x, y, out var block))
-                {
-                    block.Draw();
-                }
-                else
-                {
-                    Console.Write(EmptyBlock);
-                }
-
-                // Draw-processen ska se ut så här när spelet är färdigt:
-                // if: Explosion
-                // else if: Spelare
-                // else if: Block
-                // else: Tomt utrymme
-
-            }
-
-            // Ram - höger sida
-            Console.Write("█");
-
-            // Ny rad
-            Console.Write(Environment.NewLine);
+            DrawRow(y);
         }
 
         // Ram - bottenrad
-        for (int i = 0; i < LevelWidth + 1; i++) {
-            Console.Write("▀▀");
+        Console.Write("▀▀");
+        for (int i = 0; i < LevelWidth; i++) {
+            Console.Write("▀▀▀▀▀▀▀");
         }
         Console.Write(Environment.NewLine);
+    }
+
+    private void DrawRow(int y)
+    {
+        // Draw-processen ska se ut så här när spelet är färdigt:
+        // if: Explosion
+        // else if: Spelare
+        // else if: Block
+        // else: Tomt utrymme
+
+        // Ram - vänster sida
+        Console.Write("█");
+
+        for (int x = 0; x < LevelWidth; x++)
+        {
+            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
+            if (TryGetBlockAt(x, y, out var block))
+            {
+                block.DrawLine1();
+            }
+            else
+            {
+                Console.Write(EmptyBlock);
+            }
+        }
+
+        // Ram - höger + vänster sida
+        Console.Write("█" + Environment.NewLine + "█");
+
+        for (int x = 0; x < LevelWidth; x++)
+        {
+            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
+            if (TryGetBlockAt(x, y, out var block))
+            {
+                block.DrawLine2();
+            }
+            else
+            {
+                Console.Write(EmptyBlock);
+            }
+        }
+
+        // Ram - höger + vänster sida
+        Console.Write("█" + Environment.NewLine + "█");
+
+        for (int x = 0; x < LevelWidth; x++)
+        {
+            // Om det finns ett block på positionen, rita ut det. Annars rita ett tomt utrymme.
+            if (TryGetBlockAt(x, y, out var block))
+            {
+                block.DrawLine3();
+            }
+            else
+            {
+                Console.Write(EmptyBlock);
+            }
+        }
+
+        // Ram - höger sida
+        Console.Write("█" + Environment.NewLine);
     }
 
     public bool TryGetBlockAt(int x, int y, 
