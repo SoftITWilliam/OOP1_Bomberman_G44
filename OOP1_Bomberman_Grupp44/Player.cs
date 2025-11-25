@@ -22,14 +22,14 @@ class Player : IDrawable
 
         if (!level.IsOutOfBounds(X + dx, Y) &&
             !level.HasCollidibleBlockAt(X + dx, Y) &&
-            !level.HasBombAt(X, Y))
+            !level.HasBombAt(X + dx, Y))
         {
             X += dx;
         }
 
         if (!level.IsOutOfBounds(X, Y + dy) &&
             !level.HasCollidibleBlockAt(X, Y + dy) &&
-            !level.HasBombAt(X, Y))
+            !level.HasBombAt(X, Y + dy))
         {
             Y += dy;
         }

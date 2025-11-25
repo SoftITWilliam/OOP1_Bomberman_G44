@@ -29,7 +29,7 @@ public class Program
         Console.Clear();
         game.Start();
 
-        Bomb test = new Bomb(3, 3);
+    
         
     }
 }

@@ -5,7 +5,7 @@ class Bomb : IDrawable
 {
     private int BlastRange;
     private const int MsRemaining = 3000;
-    private Player BombOwner;
+    private Player? BombOwner;
     private readonly DateTime PlacedTime;
     public bool HasExploded { get; private set; }
     public int X { get; }
@@ -20,7 +20,16 @@ class Bomb : IDrawable
         X = player.X;
         Y = player.Y;
     }
-    public Bomb(int X, int Y){}
+    public Bomb(int X, int Y, int BlastRange)
+    {
+        this.BlastRange = BlastRange;
+        BombOwner = null;
+        PlacedTime = DateTime.Now;
+        HasExploded = false;
+        this.X = X;
+        this.Y = Y;
+
+    }
     
     public List<(int x, int y)>? Update()
     {

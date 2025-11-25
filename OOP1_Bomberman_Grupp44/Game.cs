@@ -164,6 +164,10 @@ class Game
         {
             DrawAt(x, y, player);
         }
+        else if(level.TryGetBombAt(x, y, out var bomb))
+        {
+            DrawAt(x, y, bomb);
+        }
         else if (level.TryGetBlockAt(x, y, out var block))
         {
             DrawAt(x, y, block);
