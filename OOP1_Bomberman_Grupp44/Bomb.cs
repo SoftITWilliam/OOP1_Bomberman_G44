@@ -5,9 +5,18 @@ class Bomb : IDrawable
 {
     private int BlastRange;
     private const int MsRemaining = 3000;
+    private const int MsExplosionTime = 1000;
     private Player? BombOwner;
     private readonly DateTime PlacedTime;
+    public DateTime ExplodedTime { get; private set; }
     public bool HasExploded { get; private set; }
+    public bool DoneExploding {
+        get
+        {
+            if (!HasExploded) return false;
+            var elapsedMs = (DateTime.Now - ExplodedTime).TotalMilliseconds;
+            return elapsedMs >= MsExplosionTime;
+        } }
     public int X { get; }
     public int Y { get; }
 
@@ -30,7 +39,8 @@ class Bomb : IDrawable
         this.Y = Y;
 
     }
-    
+
+
     public List<(int x, int y)>? Update()
     {
         var elapsedMs = (DateTime.Now - PlacedTime).TotalMilliseconds;
@@ -38,18 +48,19 @@ class Bomb : IDrawable
         else return null; //returnera ingenting om tiden inte är ute
     }
 
-    public List<(int x, int y)> Explode() //behöver både denna och Update vara public?
+    private List<(int x, int y)> Explode() //behöver både denna och Update vara public?
     {
         HasExploded = true;
+        ExplodedTime = DateTime.Now;
         return ExplosionRange();
     }
-    
+
 
     public List<(int x, int y)> ExplosionRange()
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
-        int px = BombOwner.X;
-        int py = BombOwner.Y;
+        int px = X;
+        int py = Y;
 
         InRange.Add((px, py)); //bombens ruta
         for (int i = 1; i <= BlastRange; i++)
