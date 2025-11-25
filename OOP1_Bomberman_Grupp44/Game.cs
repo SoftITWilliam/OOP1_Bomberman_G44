@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace Bomberman;
 
@@ -46,14 +45,25 @@ class Game
 
             foreach (Player player in Players)
             {
+                // Spara spelarens position innan och efter inputhanteringen.
+                (int x1, int y1) = (player.X, player.Y);
                 player.HandleInput(input, level);
+                (int x2, int y2) = (player.X, player.Y);
+
+                // Om spelaren har rört på sig - rita om gamla och nya positionen.
+                // Detta är för att undvika onödiga redraws.
+                if (x1 != x2 || y1 != y2)
+                {
+                    RedrawPosition(x1, y1);
+                    RedrawPosition(x2, y2);
+                }
             }
 
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;
 
-            Redraw();
+            //Redraw();
             Thread.Sleep(FrameDurationMs);
         }
     }
@@ -131,36 +141,42 @@ class Game
     {
         foreach (IBlock block in level.Blocks)
         {
-            drawAt(block.X, block.Y, block);
+            DrawAt(block.X, block.Y, block);
+        }
+        foreach (Player player in Players)
+        {
+            DrawAt(player.X, player.Y, player);
         }
     }
 
-    public void Redraw()
+    public void RedrawAll()
     {
         for (int y = 0; y < level.Height; y++)
         {
             for (int x = 0; x < level.Width; x++)
             {
-                if (TryGetPlayerAt(x, y, out var player))
-                {
-                    drawAt(x, y, player);
-                }
-                else if (level.TryGetBlockAt(x, y, out var block))
-                {
-                    if (block is DestructibleBlock)
-                    {
-                        drawAt(x, y, block);
-                    }
-                }
-                else
-                {
-                    drawAt(x, y, emptySpace);
-                }
+                RedrawPosition(x, y);
             }
         }
     }
 
-    private void drawAt(int x, int y, IDrawable drawable)
+    private void RedrawPosition(int x, int y)
+    {
+        if (TryGetPlayerAt(x, y, out var player))
+        {
+            DrawAt(x, y, player);
+        }
+        else if (level.TryGetBlockAt(x, y, out var block))
+        {
+            DrawAt(x, y, block);
+        }
+        else
+        {
+            DrawAt(x, y, emptySpace);
+        }
+    } 
+
+    private void DrawAt(int x, int y, IDrawable drawable)
     {
         (int cX, int cY) = GetCursorPosition(x, y);
 
