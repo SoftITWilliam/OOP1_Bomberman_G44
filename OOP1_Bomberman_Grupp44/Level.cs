@@ -15,7 +15,7 @@ class Level
     public int Width { get; }
     public int Height { get; }
 
-    private List<IBlock> Blocks = new List<IBlock>();
+    public List<IBlock> Blocks { get; } = new List<IBlock>();
 
     public Level(int width, int height)
     {
