@@ -8,6 +8,8 @@ class Bomb : IDrawable
     private Player BombOwner;
     private readonly DateTime PlacedTime;
     public bool HasExploded { get; private set; }
+    public int X { get; }
+    public int Y { get; }
 
     public Bomb(Player player, int BlastRange)
     {
@@ -15,7 +17,10 @@ class Bomb : IDrawable
         BombOwner = player;
         PlacedTime = DateTime.Now;
         HasExploded = false;
+        X = player.X;
+        Y = player.Y;
     }
+    public Bomb(int X, int Y){}
     
     public List<(int x, int y)>? Update()
     {
@@ -50,15 +55,16 @@ class Bomb : IDrawable
 
     public void DrawLine1()
     {
-        Console.WriteLine("bomb");
+        ConsoleUtils.WriteWithColor("*^-    ", ConsoleColor.DarkRed);
     }
      public void DrawLine2()
     {
-        Console.WriteLine("bomb");
+        ConsoleUtils.WriteWithColor(" (   ) ", ConsoleColor.DarkRed);
     }
-     public void DrawLine3()
+    public void DrawLine3()
     {
-        Console.WriteLine("bomb");
+        ConsoleUtils.WriteWithColor("  `-‘  ", ConsoleColor.DarkRed);
     }
+    
 
 }
