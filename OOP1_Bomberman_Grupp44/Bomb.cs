@@ -55,7 +55,7 @@ class Bomb : IDrawable
 
     public void DrawLine1()
     {
-        ConsoleUtils.WriteWithColor("*^-    ", ConsoleColor.DarkRed);
+        ConsoleUtils.WriteWithColor(" *^\\   ", ConsoleColor.DarkRed);
     }
      public void DrawLine2()
     {
