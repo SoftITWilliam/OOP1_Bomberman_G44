@@ -15,15 +15,21 @@ class Player : IDrawable
         this.controls = controls;
     }
 
-    public void HandleInput(IEnumerable<string> keys)
+    public void HandleInput(IEnumerable<string> keys, Level level)
     {
         var (dx, dy, placedBomb) = controls.GetDirection(keys);
 
-        if (X + dx >= 0 && X + dx < Game.LevelWidth)
+        if (!level.IsOutOfBounds(X + dx, Y) && 
+            !level.HasCollidibleBlockAt(X + dx, Y))
+        {
             X += dx;
+        }
 
-        if (Y + dy >= 0 && Y + dy < Game.LevelHeight)
+        if (!level.IsOutOfBounds(X, Y + dy) && 
+            !level.HasCollidibleBlockAt(X, Y + dy))
+        {
             Y += dy;
+        }
     }
     
     public void PlaceBomb()
