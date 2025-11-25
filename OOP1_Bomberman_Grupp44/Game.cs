@@ -13,8 +13,6 @@ class Game
 
     private EmptySpace emptySpace = new EmptySpace();
 
-    private List<Player> Players = new List<Player>();
-    
     private Level level;
     public Level Level => level;
 
@@ -26,7 +24,7 @@ class Game
 
     public void AddPlayer(Player player) 
     {
-        Players.Add(player);
+        level.Players.Add(player);
         Console.WriteLine($"Added player: {player.Name}");
     }
 
@@ -43,7 +41,7 @@ class Game
         {
             var input = KeyInput.ReadAll();
 
-            foreach (Player player in Players)
+            foreach (Player player in level.Players)
             {
                 // Spara spelarens position innan och efter inputhanteringen.
                 (int x1, int y1) = (player.X, player.Y);
@@ -143,7 +141,7 @@ class Game
         {
             DrawAt(block.X, block.Y, block);
         }
-        foreach (Player player in Players)
+        foreach (Player player in level.Players)
         {
             DrawAt(player.X, player.Y, player);
         }
@@ -162,7 +160,7 @@ class Game
 
     private void RedrawPosition(int x, int y)
     {
-        if (TryGetPlayerAt(x, y, out var player))
+        if (level.TryGetPlayerAt(x, y, out var player))
         {
             DrawAt(x, y, player);
         }
@@ -186,13 +184,6 @@ class Game
         drawable.DrawLine2();
         Console.SetCursorPosition(cX, cY + 2);
         drawable.DrawLine3();
-    }
-
-    public bool TryGetPlayerAt(int x, int y,
-        [NotNullWhen(true)] out Player? player)
-    {
-        player = Players.Find(p => p.X == x && p.Y == y);
-        return player != null;
     }
 
     // Returnerar konsolens cursor-position för level-koordinaten

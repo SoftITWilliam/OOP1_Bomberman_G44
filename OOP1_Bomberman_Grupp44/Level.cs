@@ -15,10 +15,11 @@ class Level
     public int Width { get; }
     public int Height { get; }
 
+    public List<Player> Players = new List<Player>();
     public List<IBlock> Blocks { get; } = new List<IBlock>();
     public List<Bomb> Bombs { get; } = new List<Bomb>();
 
-    public Level(int width, int height)
+    private Level(int width, int height)
     {
         Width = width;
         Height = height;
@@ -124,6 +125,13 @@ class Level
     public bool IsOutOfBounds(int x, int y) => 
         (x < 0 || x >= Width || y < 0 || y >= Height);
 
+
+    public bool TryGetPlayerAt(int x, int y,
+        [NotNullWhen(true)] out Player? player)
+    {
+        player = Players.Find(p => p.X == x && p.Y == y);
+        return player != null;
+    }
     public bool TryGetBlockAt(int x, int y,
         [NotNullWhen(true)] out IBlock? block)
     {
