@@ -50,7 +50,7 @@ class Player : IDrawable
         Console.SetCursorPosition(cx + 1, cy);
         ConsoleUtils.WriteWithColor("[@ @]", Color);
         Console.SetCursorPosition(cx + 1, cy + 1);
-        ConsoleUtils.WriteWithColor("/( )\\", Color);
+        ConsoleUtils.WriteWithColor("/(.)\\", Color);
         Console.SetCursorPosition(cx + 2, cy + 2);
         ConsoleUtils.WriteWithColor("/ \\", Color);
     }
