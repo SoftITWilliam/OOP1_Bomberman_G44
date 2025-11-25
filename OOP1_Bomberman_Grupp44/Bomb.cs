@@ -16,7 +16,7 @@ class Bomb : IDrawable
             if (!HasExploded) return false;
             var elapsedMs = (DateTime.Now - ExplodedTime).TotalMilliseconds;
             return elapsedMs >= MsExplosionTime;
-        } }
+        }}
     public int X { get; }
     public int Y { get; }
 
@@ -52,6 +52,7 @@ class Bomb : IDrawable
     {
         HasExploded = true;
         ExplodedTime = DateTime.Now;
+        BombOwner?.AddAvailableBomb();
         return ExplosionRange();
     }
 

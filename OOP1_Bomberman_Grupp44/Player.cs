@@ -8,6 +8,8 @@ class Player : IDrawable
     public int Y { get; private set; }
     private int BlastRange = 1; //för att skicka in i bomb
 
+    private int AvailableBombs = 1;
+
     private readonly IControlScheme controls;
 
     public Player(int startX, int startY, IControlScheme controls)
@@ -33,15 +35,22 @@ class Player : IDrawable
         {
             Y += dy;
         }
-        if(placedBomb)
+        if (placedBomb)
         {
             var bomb = PlaceBomb();
-            level.AddBomb(bomb);
+            if(bomb != null) level.AddBomb(bomb);
         }
     }
     
-    public Bomb PlaceBomb()
+    public void AddAvailableBomb()
     {
+        AvailableBombs += 1;
+    }
+    public Bomb? PlaceBomb()
+    {
+        if (AvailableBombs <= 0) return null;
+
+        AvailableBombs -= 1;
         return new Bomb(this, BlastRange);
     }
 

@@ -77,20 +77,27 @@ class Game
             foreach (Bomb bomb in level.Bombs)
             {
                 var affectedblocks = bomb.Update();
-                if (affectedblocks != null)
+                if (affectedblocks == null) continue;
+                foreach (var (x, y) in affectedblocks)
                 {
-                    foreach (var (x, y) in affectedblocks)
+                    if (level.IsOutOfBounds(x, y)) continue;
+
+                    if (level.TryGetBlockAt(x, y, out IBlock block))
                     {
-                        if (level.TryGetBlockAt(x, y, out IBlock block))
-                        {
-                            block.Destroy();
-                        }
-                        RedrawPosition(x, y);
+                        block.Destroy();
                     }
+                    RedrawPosition(x, y);
                 }
+                
             }
 
-            level.Bombs.RemoveAll(b => b.DoneExploding);
+            //tar bort färdigexploderade bomber från listan
+            level.Bombs.RemoveAll(b =>
+            {
+                if (b.DoneExploding)
+                    RedrawPosition(b.X, b.Y);
+                return b.DoneExploding;
+            });
             
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
@@ -203,7 +210,7 @@ class Game
         {
             DrawAt(x, y, player);
         }
-        else if(level.TryGetBombAt(x, y, out var bomb))
+        else if(level.TryGetBombAt(x, y, out var bomb) && !bomb.HasExploded)
         {
             DrawAt(x, y, bomb);
         }
