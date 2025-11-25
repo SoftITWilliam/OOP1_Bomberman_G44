@@ -6,6 +6,7 @@ class Player : IDrawable
     public required ConsoleColor Color { get; init; }
     public int X { get; private set; }
     public int Y { get; private set; }
+    private int BlastRange = 1; //för att skicka in i bomb
 
     private readonly IControlScheme controls;
 
