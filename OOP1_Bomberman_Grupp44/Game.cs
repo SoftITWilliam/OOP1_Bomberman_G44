@@ -1,13 +1,18 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Bomberman;
 
 class Game 
 {
-    public const int FPS = 20;    
+    public const int FPS = 10;    
     public static int FrameDurationMs => 1000 / FPS;
+    private const int LevelCursorOffsetX = 2;
+    private const int LevelCursorOffsetY = 3;
+    private const int BlockCharWidth = 7;
+    private const int BlockCharHeight = 3;
 
-    private const string EmptyBlock = "       ";
+    private EmptySpace emptySpace = new EmptySpace();
 
     private List<Player> Players = new List<Player>();
     
@@ -28,6 +33,13 @@ class Game
 
     public void Start()
     {
+        Console.Clear();
+
+        EnsureValidConsoleSize();
+
+        DrawBorder();
+        InitialDraw();
+
         while (true)
         {
             var input = KeyInput.ReadAll();
@@ -41,85 +53,123 @@ class Game
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;
 
-            Console.SetCursorPosition(0, 0);
-            //Console.Clear();
-            DrawEverything();
+            Redraw();
             Thread.Sleep(FrameDurationMs);
         }
     }
 
-    public void DrawEverything()
+    private void EnsureValidConsoleSize()
     {
-        // Ram - topprad
-        Console.Write("▄▄");
-        for (int i = 0; i < level.Width; i++) {
-            Console.Write("▄▄▄▄▄▄▄");
-        }
-        Console.Write(Environment.NewLine);
+        int minW = (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2) - 2;
+        int minH = (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2) - 2;
 
-        // Rita alla spelets rader
-        // Varje ruta i spelet är 3x7 i ascii, så varje rad måste ritas 3 gånger.
+        if (Console.WindowWidth >= minW && Console.WindowHeight >= minH)
+            return;
+
+        while (Console.WindowWidth < minW || Console.WindowHeight < minH)
+        {
+            Console.Clear();
+
+            Console.WriteLine("Fönstret är för litet!");
+            Console.WriteLine("För att starta spelet, öka storleken");
+
+            string txt1 = $"Bredd: {Console.WindowWidth}/{minW}";
+
+            ConsoleColor c1 = Console.WindowWidth < minW 
+                ? ConsoleColor.Red 
+                : ConsoleColor.Green;
+
+            string txt2 = $"Höjd: {Console.WindowHeight}/{minH}";
+
+            ConsoleColor c2 = Console.WindowHeight < minH 
+                ? ConsoleColor.Red 
+                : ConsoleColor.Green;
+
+            ConsoleUtils.WriteWithColor(txt1, c1);
+            Console.Write(Environment.NewLine);
+            ConsoleUtils.WriteWithColor(txt2, c2);
+
+            Thread.Sleep(100);
+        }
+
+        Console.Clear();
+        ConsoleUtils.WriteWithColor("Nice!", ConsoleColor.Green);
+        Thread.Sleep(500);
+        Console.Clear();
+    }
+
+    public void DrawBorder()
+    {
+        int frameWidth = (level.Width * BlockCharWidth + 2);
+        int frameHeight = (level.Height * BlockCharHeight);
+
+        string topFrame = string.Empty.PadLeft(frameWidth,'▄');
+        string bottomFrame = string.Empty.PadLeft(frameWidth,'▀');
+        
+        // Draw top of frame
+        int frameX = LevelCursorOffsetX - 1;
+        int frameY = LevelCursorOffsetY - 1;
+        Console.SetCursorPosition(frameX, frameY);
+        Console.Write(topFrame);
+
+        // Draw left and right side of frame
+        for (int y = 1; y <= frameHeight; y++)
+        {
+            Console.SetCursorPosition(frameX, frameY + y);
+            Console.Write("█");
+            Console.SetCursorPosition(frameX + frameWidth - 1, frameY + y);
+            Console.Write("█");
+        }
+
+        // Draw bottom of frame
+        frameY = LevelCursorOffsetY + level.Height * BlockCharHeight;
+        Console.SetCursorPosition(frameX, frameY);
+        Console.Write(bottomFrame);
+    }
+
+    public void InitialDraw()
+    {
+        foreach (IBlock block in level.Blocks)
+        {
+            drawAt(block.X, block.Y, block);
+        }
+    }
+
+    public void Redraw()
+    {
         for (int y = 0; y < level.Height; y++)
         {
-            // Ram - vänster sida
-            Console.Write("█");
-
-            drawLine(y, 1);
-
-            // Ram - höger + vänster sida
-            Console.Write("█" + Environment.NewLine + "█");
-
-            drawLine(y, 2);
-            
-            // Ram - höger + vänster sida
-            Console.Write("█" + Environment.NewLine + "█");
-
-            drawLine(y, 3);
-
-            // Ram - höger sida
-            Console.Write("█" + Environment.NewLine);
-        }
-
-        // Ram - bottenrad
-        Console.Write("▀▀");
-        for (int i = 0; i < level.Width; i++) {
-            Console.Write("▀▀▀▀▀▀▀");
-        }
-        Console.Write(Environment.NewLine);
-    }
-
-    private void drawLine(int y, int line) 
-    {
-        // Draw-processen ska se ut så här när spelet är färdigt:
-        // if: Explosion
-        // else if: Spelare
-        // else if: Block
-        // else: Tomt utrymme
-        
-        for (int x = 0; x < level.Width; x++)
-        {
-            if (TryGetPlayerAt(x, y, out var player))
+            for (int x = 0; x < level.Width; x++)
             {
-                draw(player, line);
-            }
-            else if (level.TryGetBlockAt(x, y, out var block))
-            {
-                draw(block, line);
-            }
-            else
-            {
-                Console.Write(EmptyBlock);
+                if (TryGetPlayerAt(x, y, out var player))
+                {
+                    drawAt(x, y, player);
+                }
+                else if (level.TryGetBlockAt(x, y, out var block))
+                {
+                    if (block is DestructibleBlock)
+                    {
+                        drawAt(x, y, block);
+                    }
+                }
+                else
+                {
+                    drawAt(x, y, emptySpace);
+                }
             }
         }
     }
-    private void draw(IDrawable drawable, int n)
+
+    private void drawAt(int x, int y, IDrawable drawable)
     {
-        switch (n)
-        {
-            case 1: drawable.DrawLine1(); break;
-            case 2: drawable.DrawLine2(); break;
-            case 3: drawable.DrawLine3(); break;
-        }
+        (int cX, int cY) = GetCursorPosition(x, y);
+
+        Console.SetCursorPosition(cX, cY);
+        drawable.DrawLine1();
+        Console.SetCursorPosition(cX, cY + 1);
+        drawable.DrawLine2();
+        Console.SetCursorPosition(cX, cY + 2);
+        drawable.DrawLine3();
     }
 
     public bool TryGetPlayerAt(int x, int y,
@@ -128,4 +178,24 @@ class Game
         player = Players.Find(p => p.X == x && p.Y == y);
         return player != null;
     }
+
+    // Returnerar konsolens cursor-position för level-koordinaten
+    public (int cX, int cY) GetCursorPosition(int x, int y)
+    {
+        int cX = LevelCursorOffsetX + (x * BlockCharWidth);
+        int cY = LevelCursorOffsetY + (y * BlockCharHeight);
+        return (cX, cY);
+    }
+
+    public (int cX, int cY) GetCursorPosition(IBlock block) => 
+        GetCursorPosition(block.X, block.Y);
+}
+
+internal class EmptySpace : IDrawable
+{
+    private string space = string.Empty.PadLeft(7, ' ');
+    
+    public void DrawLine1() => Console.Write(space);
+    public void DrawLine2() => Console.Write(space);
+    public void DrawLine3() => Console.Write(space);
 }
