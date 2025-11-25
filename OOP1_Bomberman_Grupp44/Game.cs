@@ -56,7 +56,22 @@ class Game
                     RedrawPosition(x2, y2);
                 }
             }
-
+            foreach(Bomb bomb in level.Bombs)
+            {
+                var affectedblocks = bomb.Update();
+                
+                if(affectedblocks != null)
+                {
+                    foreach(var (x, y) in affectedblocks)
+                    {
+                        if(level.TryGetBlockAt(x, y, out IBlock block))
+                        {
+                            block.Destroy();
+                        }
+                    }
+                }
+            }
+            
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;

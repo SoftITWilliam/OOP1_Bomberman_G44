@@ -43,7 +43,7 @@ class Bomb : IDrawable
         HasExploded = true;
         return ExplosionRange();
     }
-
+    
 
     public List<(int x, int y)> ExplosionRange()
     {
