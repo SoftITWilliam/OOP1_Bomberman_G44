@@ -11,6 +11,16 @@ class Game
     private const int BlockCharWidth = 7;
     private const int BlockCharHeight = 3;
 
+    private int MinConsoleWidth => 
+        (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2) - 1;
+
+    private int MinConsoleHeight =>
+        (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2) - 1;
+
+    private bool InvalidConsoleSize() =>
+        Console.WindowHeight < MinConsoleHeight ||
+        Console.WindowWidth < MinConsoleWidth;
+
     private EmptySpace emptySpace = new EmptySpace();
 
     private Level level;
@@ -32,13 +42,21 @@ class Game
     {
         Console.Clear();
 
-        EnsureValidConsoleSize();
+        if (InvalidConsoleSize())
+            EnsureValidConsoleSize();
 
         DrawBorder();
         InitialDraw();
 
         while (true)
         {
+            if (InvalidConsoleSize())
+            {
+                EnsureValidConsoleSize();
+                DrawBorder();
+                RedrawAll();
+            }
+            
             var input = KeyInput.ReadAll();
 
             foreach (Player player in level.Players)
@@ -83,28 +101,23 @@ class Game
 
     private void EnsureValidConsoleSize()
     {
-        int minW = (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2) - 2;
-        int minH = (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2) - 2;
-
-        if (Console.WindowWidth >= minW && Console.WindowHeight >= minH)
-            return;
-
-        while (Console.WindowWidth < minW || Console.WindowHeight < minH)
+        Console.SetCursorPosition(0, 0);
+        while (InvalidConsoleSize())
         {
             Console.Clear();
 
             Console.WriteLine("Fönstret är för litet!");
             Console.WriteLine("För att starta spelet, öka storleken");
 
-            string txt1 = $"Bredd: {Console.WindowWidth}/{minW}";
+            string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}";
 
-            ConsoleColor c1 = Console.WindowWidth < minW 
+            ConsoleColor c1 = Console.WindowWidth < MinConsoleWidth 
                 ? ConsoleColor.Red 
                 : ConsoleColor.Green;
 
-            string txt2 = $"Höjd: {Console.WindowHeight}/{minH}";
+            string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}";
 
-            ConsoleColor c2 = Console.WindowHeight < minH 
+            ConsoleColor c2 = Console.WindowHeight < MinConsoleHeight 
                 ? ConsoleColor.Red 
                 : ConsoleColor.Green;
 
