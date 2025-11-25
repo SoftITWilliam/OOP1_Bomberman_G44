@@ -20,22 +20,29 @@ class Player : IDrawable
     {
         var (dx, dy, placedBomb) = controls.GetDirection(keys);
 
-        if (!level.IsOutOfBounds(X + dx, Y) && 
-            !level.HasCollidibleBlockAt(X + dx, Y))
+        if (!level.IsOutOfBounds(X + dx, Y) &&
+            !level.HasCollidibleBlockAt(X + dx, Y) &&
+            !level.HasBombAt(X, Y))
         {
             X += dx;
         }
 
-        if (!level.IsOutOfBounds(X, Y + dy) && 
-            !level.HasCollidibleBlockAt(X, Y + dy))
+        if (!level.IsOutOfBounds(X, Y + dy) &&
+            !level.HasCollidibleBlockAt(X, Y + dy) &&
+            !level.HasBombAt(X, Y))
         {
             Y += dy;
         }
+        if(placedBomb)
+        {
+            var bomb = PlaceBomb();
+            level.AddBomb(bomb);
+        }
     }
     
-    public void PlaceBomb()
+    public Bomb PlaceBomb()
     {
-        
+        return new Bomb(this, BlastRange);
     }
 
     public void DrawLine1()

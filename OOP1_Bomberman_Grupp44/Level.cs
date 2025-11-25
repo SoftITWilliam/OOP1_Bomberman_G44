@@ -16,6 +16,7 @@ class Level
     public int Height { get; }
 
     public List<IBlock> Blocks { get; } = new List<IBlock>();
+    public List<Bomb> Bombs { get; } = new List<Bomb>();
 
     public Level(int width, int height)
     {
@@ -102,6 +103,14 @@ class Level
         }
         Blocks.Add(block);
     }
+    public void AddBomb(Bomb bomb)
+    {
+        if (IsOutOfBounds(bomb.X, bomb.Y))
+        {
+            throw new Exception("Bomb is out of bounds");
+        }
+        Bombs.Add(bomb);
+    }
 
     public (int x, int y) GetCornerPosition(Corners corner) => corner switch
     {
@@ -115,13 +124,20 @@ class Level
     public bool IsOutOfBounds(int x, int y) => 
         (x < 0 || x >= Width || y < 0 || y >= Height);
 
-    public bool TryGetBlockAt(int x, int y, 
+    public bool TryGetBlockAt(int x, int y,
         [NotNullWhen(true)] out IBlock? block)
     {
         block = Blocks.Find(b => b.X == x && b.Y == y);
         return block != null;
     }
-
+    public bool TryGetBombAt(int x, int y,
+        [NotNullWhen(true)] out Bomb? bomb)
+    {
+        bomb = Bombs.Find(b => b.X == x && b.Y == y); //?
+        return bomb != null;
+    }
     public bool HasCollidibleBlockAt(int x, int y) =>
         TryGetBlockAt(x, y, out var block) && block.Collidible;
+    public bool HasBombAt(int x, int y) =>
+        TryGetBombAt(x, y, out var bomb);
 }
