@@ -7,6 +7,11 @@ namespace Bomberman;
 
 class Level
 {
+    public enum Corners
+    {
+        TopLeft, TopRight, BottomLeft, BottomRight
+    }
+
     public int Width { get; }
     public int Height { get; }
 
@@ -18,21 +23,21 @@ class Level
         Height = height;
     }
 
-    public static Level CreateTestLevel()
+    public static Level TestLevel()
     {
         Level lvl = new Level(7, 5);
 
-        lvl.Blocks.Add(new SolidBlock(1, 1));
-        lvl.Blocks.Add(new SolidBlock(1, 2));
-        lvl.Blocks.Add(new SolidBlock(1, 3));
+        lvl.AddBlock(new SolidBlock(1, 1));
+        lvl.AddBlock(new SolidBlock(1, 2));
+        lvl.AddBlock(new SolidBlock(1, 3));
 
-        lvl.Blocks.Add(new DestructibleBlock(3, 1));
-        lvl.Blocks.Add(new DestructibleBlock(3, 2));
-        lvl.Blocks.Add(new DestructibleBlock(3, 3));
+        lvl.AddBlock(new DestructibleBlock(3, 1));
+        lvl.AddBlock(new DestructibleBlock(3, 2));
+        lvl.AddBlock(new DestructibleBlock(3, 3));
 
-        lvl.Blocks.Add(new DestructibleBlock(5, 1));
-        lvl.Blocks.Add(new DestructibleBlock(5, 2));
-        lvl.Blocks.Add(new DestructibleBlock(5, 3));
+        lvl.AddBlock(new DestructibleBlock(5, 1));
+        lvl.AddBlock(new DestructibleBlock(5, 2));
+        lvl.AddBlock(new DestructibleBlock(5, 3));
 
         IBlock? b;
         if (lvl.TryGetBlockAt(5, 1, out b)) b.Destroy();
@@ -41,6 +46,71 @@ class Level
 
         return lvl;
     }
+ 
+    public static Level Classic()
+    {
+        Level lvl = new Level(15, 11);
+
+        for (int x = 1; x < lvl.Width; x += 2)
+        {
+            for (int y = 1; y < lvl.Height; y += 2)
+            {
+                lvl.AddBlock(new SolidBlock(x, y));
+            }
+        }
+
+        List<(int x, int y)> BlockedPositions = new();
+
+        for (int x = 0; x < lvl.Width; x++)
+        {
+            for (int y = 0; y < lvl.Height; y++)
+            {
+                if ((x + y) % 2 == 0)
+                    continue;
+
+                lvl.AddBlock(new DestructibleBlock(x, y));
+            }
+        }
+
+        IBlock? b;
+        int X, Y;
+
+        (X, Y) = (X, Y) = lvl.GetCornerPosition(Corners.TopLeft);
+        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.Destroy();
+
+        (X, Y) = lvl.GetCornerPosition(Corners.BottomLeft);
+        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.Destroy();
+
+        (X, Y) = lvl.GetCornerPosition(Corners.TopRight);
+        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.Destroy();
+
+        (X, Y) = lvl.GetCornerPosition(Corners.BottomRight);
+        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.Destroy();
+
+        return lvl;
+    }
+
+    private void AddBlock(IBlock block)
+    {
+        if (IsOutOfBounds(block.X, block.Y))
+        {
+            throw new Exception("Block is out of bounds");
+        }
+        Blocks.Add(block);
+    }
+
+    public (int x, int y) GetCornerPosition(Corners corner) => corner switch
+    {
+        Corners.TopLeft => (0, 0),
+        Corners.TopRight => (Width - 1, 0),
+        Corners.BottomLeft => (0, Height - 1),
+        Corners.BottomRight => (Width - 1, Height - 1),
+        _ => throw new ArgumentException(null, nameof(corner)),
+    };
 
     public bool IsOutOfBounds(int x, int y) => 
         (x < 0 || x >= Width || y < 0 || y >= Height);
