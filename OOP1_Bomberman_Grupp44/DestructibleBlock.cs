@@ -20,20 +20,19 @@ class DestructibleBlock : IBlock
         isDestroyed = true;
     }
 
-    public void DrawLine1() => draw();
-    public void DrawLine2() => draw();
-    public void DrawLine3() => draw();
-
-    private void draw()
+    public void DrawAt(int cx, int cy)
     {
-        if (isDestroyed)
+        for (int i = 0; i < 3; i++)
         {
-            ConsoleUtils.WriteWithColor("░░░░░░░", ConsoleColor.DarkGray);
-        }
-        else
-        {
-            ConsoleUtils.WriteWithColor("▒▒▒▒▒▒▒", ConsoleColor.White);
+            Console.SetCursorPosition(cx, cy + i);
+            if (isDestroyed)
+            {
+                ConsoleUtils.WriteWithColor("░░░░░░░", ConsoleColor.DarkGray);
+            }
+            else
+            {
+                ConsoleUtils.WriteWithColor("▒▒▒▒▒▒▒", ConsoleColor.White);
+            }
         }
     }
- 
 }

@@ -19,13 +19,13 @@ class SolidBlock : IBlock
         // Kan inte förstöras - gör ingenting här
     }
 
-    public void DrawLine1() => draw();
-    public void DrawLine2() => draw();
-    public void DrawLine3() => draw();
-
-    private void draw()
+    public void DrawAt(int cx, int cy)
     {
-        Console.Write("███████");
+        for (int i = 0; i < 3; i++)
+        {
+            Console.SetCursorPosition(cx, cy + i);
+            Console.Write("███████");
+        }
     }
 }
     

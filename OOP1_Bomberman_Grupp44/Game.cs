@@ -175,6 +175,15 @@ class Game
 
     private void RedrawPosition(int x, int y)
     {
+        if (level.TryGetBlockAt(x, y, out var block))
+        {
+            DrawAt(x, y, block);
+        }
+        else
+        {
+            DrawAt(x, y, emptySpace);
+        }
+
         if (level.TryGetPlayerAt(x, y, out var player))
         {
             DrawAt(x, y, player);
@@ -183,14 +192,6 @@ class Game
         {
             DrawAt(x, y, bomb);
         }
-        else if (level.TryGetBlockAt(x, y, out var block))
-        {
-            DrawAt(x, y, block);
-        }
-        else
-        {
-            DrawAt(x, y, emptySpace);
-        }
     } 
 
     private void DrawAt(int x, int y, IDrawable drawable)
@@ -198,11 +199,7 @@ class Game
         (int cX, int cY) = GetCursorPosition(x, y);
 
         Console.SetCursorPosition(cX, cY);
-        drawable.DrawLine1();
-        Console.SetCursorPosition(cX, cY + 1);
-        drawable.DrawLine2();
-        Console.SetCursorPosition(cX, cY + 2);
-        drawable.DrawLine3();
+        drawable.DrawAt(cX, cY);
     }
 
     // Returnerar konsolens cursor-position för level-koordinaten
@@ -220,8 +217,12 @@ class Game
 internal class EmptySpace : IDrawable
 {
     private string space = string.Empty.PadLeft(7, ' ');
-    
-    public void DrawLine1() => Console.Write(space);
-    public void DrawLine2() => Console.Write(space);
-    public void DrawLine3() => Console.Write(space);
+    public void DrawAt(int cx, int cy)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Console.SetCursorPosition(cx, cy + i);
+            Console.Write(space);
+        }
+    }
 }

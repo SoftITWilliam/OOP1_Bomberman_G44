@@ -62,18 +62,13 @@ class Bomb : IDrawable
         return InRange;
     }
 
-    public void DrawLine1()
+    public void DrawAt(int cx, int cy)
     {
-        ConsoleUtils.WriteWithColor(" *^\\   ", ConsoleColor.DarkRed);
+        Console.SetCursorPosition(cx + 1, cy);
+        ConsoleUtils.WriteWithColor("*^\\", ConsoleColor.DarkRed);
+        Console.SetCursorPosition(cx + 1, cy + 1);
+        ConsoleUtils.WriteWithColor("(   )", ConsoleColor.DarkRed);
+        Console.SetCursorPosition(cx + 2, cy + 2);
+        ConsoleUtils.WriteWithColor("`-‘", ConsoleColor.DarkRed);
     }
-     public void DrawLine2()
-    {
-        ConsoleUtils.WriteWithColor(" (   ) ", ConsoleColor.DarkRed);
-    }
-    public void DrawLine3()
-    {
-        ConsoleUtils.WriteWithColor("  `-‘  ", ConsoleColor.DarkRed);
-    }
-    
-
 }
