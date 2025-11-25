@@ -31,7 +31,7 @@ class KeyboardControlScheme : IControlScheme
                 down = ConsoleKey.DownArrow;
                 left = ConsoleKey.LeftArrow;
                 right = ConsoleKey.RightArrow;
-                placebomb = ConsoleKey.Enter;
+                placebomb = ConsoleKey.OemPeriod;
                 break;
         }
     }
