@@ -6,16 +6,16 @@ class Game
 {
     public const int FPS = 10;    
     public static int FrameDurationMs => 1000 / FPS;
-    private const int LevelCursorOffsetX = 2;
+    private const int LevelCursorOffsetX = 5;
     private const int LevelCursorOffsetY = 3;
     private const int BlockCharWidth = 7;
     private const int BlockCharHeight = 3;
 
     private int MinConsoleWidth => 
-        (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2) - 1;
+        (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2);
 
     private int MinConsoleHeight =>
-        (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2) - 1;
+        (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2);
 
     private bool InvalidConsoleSize() =>
         Console.WindowHeight < MinConsoleHeight ||
