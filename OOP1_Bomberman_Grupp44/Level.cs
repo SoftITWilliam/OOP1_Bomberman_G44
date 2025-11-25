@@ -141,11 +141,13 @@ class Level
     public bool TryGetBombAt(int x, int y,
         [NotNullWhen(true)] out Bomb? bomb)
     {
-        bomb = Bombs.Find(b => b.X == x && b.Y == y); //?
+        bomb = Bombs.Find(b => b.X == x && b.Y == y);
         return bomb != null;
     }
     public bool HasCollidibleBlockAt(int x, int y) =>
         TryGetBlockAt(x, y, out var block) && block.Collidible;
     public bool HasBombAt(int x, int y) =>
         TryGetBombAt(x, y, out var bomb);
+    public bool HasPlayerAt(int x, int y) =>
+        TryGetPlayerAt(x, y, out var player);
 }

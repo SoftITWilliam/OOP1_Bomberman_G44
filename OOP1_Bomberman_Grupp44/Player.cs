@@ -6,16 +6,19 @@ class Player : IDrawable
     public required ConsoleColor Color { get; init; }
     public int X { get; private set; }
     public int Y { get; private set; }
+    public int MaxHP { get; private set; } = 2;
+    public int HP { get; private set; }
+    public bool IsAlive { get; private set; }
     private int BlastRange = 1; //för att skicka in i bomb
-
     private int AvailableBombs = 1;
-
     private readonly IControlScheme controls;
 
     public Player(int startX, int startY, IControlScheme controls)
     {
         (X, Y) = (startX, startY);
         this.controls = controls;
+        HP = MaxHP;
+        IsAlive = true;
     }
 
     public void HandleInput(IEnumerable<string> keys, Level level)
@@ -24,22 +27,37 @@ class Player : IDrawable
 
         if (!level.IsOutOfBounds(X + dx, Y) &&
             !level.HasCollidibleBlockAt(X + dx, Y) &&
-            !level.HasBombAt(X + dx, Y))
+            !level.HasBombAt(X + dx, Y) &&
+            !level.HasPlayerAt(X + dx, Y))
         {
             X += dx;
         }
 
         if (!level.IsOutOfBounds(X, Y + dy) &&
             !level.HasCollidibleBlockAt(X, Y + dy) &&
-            !level.HasBombAt(X, Y + dy))
+            !level.HasBombAt(X, Y + dy) &&
+            !level.HasPlayerAt(X, Y + dy))
         {
             Y += dy;
         }
         if (placedBomb)
         {
             var bomb = PlaceBomb();
-            if(bomb != null) level.AddBomb(bomb);
+            if (bomb != null) level.AddBomb(bomb);
         }
+    }
+
+    public void TakeDamage(int amount = 1)
+    {
+        if (!IsAlive) return;
+        HP -= amount;
+        if (HP <= 0) Destroy();
+
+    }
+    public void Destroy()
+    {
+        if (!IsAlive) return;
+        IsAlive = false;
     }
     
     public void AddAvailableBomb()
@@ -49,10 +67,12 @@ class Player : IDrawable
     public Bomb? PlaceBomb()
     {
         if (AvailableBombs <= 0) return null;
+        if (!IsAlive) return null; //dålig lösning?
 
         AvailableBombs -= 1;
         return new Bomb(this, BlastRange);
     }
+
 
     public void DrawAt(int cx, int cy)
     {

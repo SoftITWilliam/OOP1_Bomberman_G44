@@ -82,12 +82,22 @@ class Game
                 {
                     if (level.IsOutOfBounds(x, y)) continue;
 
-                    if (level.TryGetBlockAt(x, y, out IBlock block))
+                    if (level.TryGetBlockAt(x, y, out IBlock? block))
                     {
                         block.Destroy();
                     }
                     RedrawPosition(x, y);
                 }
+                foreach (var (x, y) in affectedblocks)
+                {
+                    if (level.IsOutOfBounds(x, y)) continue;
+                    if (level.TryGetPlayerAt(x, y, out Player? player))
+                    {
+                        player.TakeDamage();
+                    }
+                    RedrawPosition(x, y);
+                }
+            
                 
             }
 
@@ -98,6 +108,7 @@ class Game
                     RedrawPosition(b.X, b.Y);
                 return b.DoneExploding;
             });
+
             
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
@@ -206,7 +217,7 @@ class Game
             DrawAt(x, y, emptySpace);
         }
 
-        if (level.TryGetPlayerAt(x, y, out var player))
+        if (level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
         {
             DrawAt(x, y, player);
         }
