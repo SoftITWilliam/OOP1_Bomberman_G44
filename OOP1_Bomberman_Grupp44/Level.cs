@@ -48,7 +48,7 @@ class Level
 
         return lvl;
     }
- 
+
     public static Level Classic()
     {
         Level lvl = new Level(15, 11);
@@ -60,9 +60,6 @@ class Level
                 lvl.AddBlock(new SolidBlock(x, y));
             }
         }
-
-        List<(int x, int y)> BlockedPositions = new();
-
         for (int x = 0; x < lvl.Width; x++)
         {
             for (int y = 0; y < lvl.Height; y++)
@@ -95,6 +92,41 @@ class Level
 
         return lvl;
     }
+
+    public static Level Test()
+    {
+        Level lvl = new Level(15, 11);
+
+
+        var SolidBlockPositions = new (int x, int y)[]
+        {
+            (0,3), (0,7), (1,1), (1,5), (2,2), (2,5), (4,0), (4,1), (4,4),
+            (4,5),
+        };
+
+        foreach (var (x, y) in SolidBlockPositions)
+        {
+            lvl.AddBlock(new SolidBlock(x, y));
+        }
+
+        var DestrucBlockPositions = new (int x, int y)[]
+        {
+            (0,1), (1,3), (1,4), (1,7), (2,0), (2,6), (3,3), (3,5), (4,2),
+        };
+        foreach(var(x,y) in DestrucBlockPositions)
+        {
+            lvl.AddBlock(new DestructibleBlock(x, y));
+        }
+
+        return lvl;
+    }
+
+
+
+
+
+
+
 
     private void AddBlock(IBlock block)
     {
@@ -145,7 +177,7 @@ class Level
         return bomb != null;
     }
     public bool HasCollidibleBlockAt(int x, int y) =>
-        TryGetBlockAt(x, y, out var block) && block.Collidible;
+        TryGetBlockAt(x, y, out var block) && block.HasCollision;
     public bool HasBombAt(int x, int y) =>
         TryGetBombAt(x, y, out var bomb);
     public bool HasPlayerAt(int x, int y) =>
