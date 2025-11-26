@@ -4,6 +4,7 @@ using Bomberman;
 class Bomb : IDrawable
 {
     private int BlastRange;
+    public ConsoleColor Color;
     private const int MsRemaining = 3000;
     private const int MsExplosionTime = 1000;
     private Player? BombOwner;
@@ -20,6 +21,7 @@ class Bomb : IDrawable
     public int X { get; }
     public int Y { get; }
 
+    //konstruktor för bomb beroende av spelare:
     public Bomb(Player player, int BlastRange)
     {
         this.BlastRange = BlastRange;
@@ -28,8 +30,10 @@ class Bomb : IDrawable
         HasExploded = false;
         X = player.X;
         Y = player.Y;
+        Color = ConsoleColor.DarkRed;
     }
-    public Bomb(int X, int Y, int BlastRange)
+    //konstruktor för game-genererade bomber:
+    public Bomb(int X, int Y, int BlastRange, ConsoleColor Color)
     {
         this.BlastRange = BlastRange;
         BombOwner = null;
@@ -37,9 +41,8 @@ class Bomb : IDrawable
         HasExploded = false;
         this.X = X;
         this.Y = Y;
-
+        this.Color = Color;
     }
-
 
     public List<(int x, int y)>? Update()
     {
@@ -77,10 +80,10 @@ class Bomb : IDrawable
     public void DrawAt(int cx, int cy)
     {
         Console.SetCursorPosition(cx + 1, cy);
-        ConsoleUtils.WriteWithColor("*^\\", ConsoleColor.DarkRed);
+        ConsoleUtils.WriteWithColor("*^\\", Color);
         Console.SetCursorPosition(cx + 1, cy + 1);
-        ConsoleUtils.WriteWithColor("(   )", ConsoleColor.DarkRed);
+        ConsoleUtils.WriteWithColor("(   )", Color);
         Console.SetCursorPosition(cx + 2, cy + 2);
-        ConsoleUtils.WriteWithColor("`-‘", ConsoleColor.DarkRed);
+        ConsoleUtils.WriteWithColor("`-‘", Color);
     }
 }
