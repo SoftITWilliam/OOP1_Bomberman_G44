@@ -12,7 +12,6 @@ class Level
     {
         TopLeft, TopRight, BottomLeft, BottomRight
     }
-
     public int Width { get; }
     public int Height { get; }
 
@@ -49,8 +48,7 @@ class Level
 
         return lvl;
     }
-
-    public static Level Classic()
+    public static Level ClassicLevel()
     {
         Level lvl = new Level(15, 11);
 
@@ -93,8 +91,7 @@ class Level
 
         return lvl;
     }
-
-    public static Level StarPattern()
+    public static Level StarLevel()
     {
         Level lvl = new Level(15, 11);
 
@@ -140,7 +137,15 @@ class Level
         }
         Bombs.Add(bomb);
     }
-
+    public void AddPlayer(Player player)
+    {
+        if (IsOutOfBounds(player.X, player.Y))
+        {
+            throw new Exception("Player is out of bounds");
+        }
+        Players.Add(player);
+    }
+   
     public (int x, int y) GetCornerPosition(Corners corner) => corner switch
     {
         Corners.TopLeft => (0, 0),
@@ -152,7 +157,6 @@ class Level
 
     public bool IsOutOfBounds(int x, int y) => 
         (x < 0 || x >= Width || y < 0 || y >= Height);
-
 
     public bool TryGetPlayerAt(int x, int y,
         [NotNullWhen(true)] out Player? player)

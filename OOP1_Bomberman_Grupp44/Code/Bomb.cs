@@ -4,15 +4,14 @@ using Bomberman.PlayerLogic;
 class Bomb : IDrawable
 {
     private int BlastRange;
-    public ConsoleColor Color;
+    private ConsoleColor Color;
     private const int MsRemaining = 3000;
     private const int MsExplosionTime = 1000;
     private Player? BombOwner;
     private readonly DateTime PlacedTime;
     public DateTime ExplodedTime { get; private set; }
     public bool HasExploded { get; private set; }
-    public bool DoneExploding {
-        get
+    public bool DoneExploding { get
         {
             if (!HasExploded) return false;
             var elapsedMs = (DateTime.Now - ExplodedTime).TotalMilliseconds;
@@ -51,7 +50,7 @@ class Bomb : IDrawable
         else return null; //returnera ingenting om tiden inte är ute
     }
 
-    private List<(int x, int y)> Explode() //behöver både denna och Update vara public?
+    private List<(int x, int y)> Explode()
     {
         HasExploded = true;
         ExplodedTime = DateTime.Now;
@@ -59,14 +58,13 @@ class Bomb : IDrawable
         return ExplosionRange();
     }
 
-
     public List<(int x, int y)> ExplosionRange()
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
         int px = X;
         int py = Y;
 
-        InRange.Add((px, py)); //bombens ruta
+        InRange.Add((px, py)); //bombens egen ruta
         for (int i = 1; i <= BlastRange; i++)
         {
             InRange.Add((px - i, py));

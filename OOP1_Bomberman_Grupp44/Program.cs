@@ -18,7 +18,7 @@ public class Program
         Player p2 = new(game.Level.Width - 1, game.Level.Height - 1, 
             controls: new KeyboardControlScheme(ControlType.Arrows)) 
         { 
-            Name = "Bot", 
+            Name = "Also human", 
             Color = ConsoleColor.Red 
         };
 

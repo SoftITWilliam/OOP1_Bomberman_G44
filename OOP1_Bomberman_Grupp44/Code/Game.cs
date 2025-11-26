@@ -40,11 +40,7 @@ class Game
         this.Level = level;
     }
 
-    public void AddPlayer(Player player)
-    {
-        Level.Players.Add(player);
-        Console.WriteLine($"Added player: {player.Name}");
-    }
+  
 
     public void GameLoop()
     {

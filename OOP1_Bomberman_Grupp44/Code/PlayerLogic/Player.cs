@@ -2,13 +2,12 @@ namespace Bomberman.PlayerLogic;
 
 class Player : IDrawable
 {
-    public required string Name { get; init; }
-    public required ConsoleColor Color { get; init; }
+    public required string Name { get; init; } //nödvändig? förmodligen för scoreboard
+    public required ConsoleColor Color { get; init; } //skulle kunna ändras t private senare!
     public int X { get; private set; }
     public int Y { get; private set; }
     public int HP { get; private set; }
     public bool IsAlive => HP > 0;
-    
     private int BlastRange = 1; //för att skicka in i bomb
     private int AvailableBombs = 1;
     private readonly IControlScheme controls;
@@ -70,7 +69,7 @@ class Player : IDrawable
         Console.SetCursorPosition(cx + 1, cy);
         ConsoleUtils.WriteWithColor("[@ @]", Color);
         Console.SetCursorPosition(cx + 1, cy + 1);
-        ConsoleUtils.WriteWithColor("/(.)\\", Color);
+        ConsoleUtils.WriteWithColor("/( )\\", Color);
         Console.SetCursorPosition(cx + 2, cy + 2);
         ConsoleUtils.WriteWithColor("/ \\", Color);
     }
