@@ -26,10 +26,8 @@ public class Program
         game.AddPlayer(p1);
         game.AddPlayer(p2);
 
+        Console.CursorVisible = false;
         Console.Clear();
         game.Start();
-
-    
-        
     }
 }
