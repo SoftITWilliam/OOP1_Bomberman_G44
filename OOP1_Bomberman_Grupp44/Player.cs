@@ -67,7 +67,7 @@ class Player : IDrawable
     public Bomb? PlaceBomb()
     {
         if (AvailableBombs <= 0) return null;
-        if (!IsAlive) return null; //dålig lösning?
+        if (!IsAlive) return null;
 
         AvailableBombs -= 1;
         return new Bomb(this, BlastRange);
