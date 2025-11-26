@@ -1,4 +1,4 @@
-using Bomberman;
+namespace Bomberman.PlayerLogic;
 
 class Player : IDrawable
 {

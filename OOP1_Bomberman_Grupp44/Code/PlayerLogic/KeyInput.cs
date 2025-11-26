@@ -1,9 +1,8 @@
-// ...existing code...
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bomberman;
+namespace Bomberman.PlayerLogic;
 
 // Hela denna klass är från Copilot
 class KeyInput

@@ -1,11 +1,12 @@
-﻿
+﻿using Bomberman.PlayerLogic;
+
 namespace Bomberman;
 
 public class Program 
 {
     static void Main(string[] args) 
     {
-        Game game = new Game();
+        Game game = new Game(Level.StarPattern());
 
         Player p1 = new(0, 0, 
             controls: new KeyboardControlScheme(ControlType.Wasd)) 
@@ -28,6 +29,6 @@ public class Program
 
         Console.CursorVisible = false;
         Console.Clear();
-        game.Start();
+        game.GameLoop();
     }
 }

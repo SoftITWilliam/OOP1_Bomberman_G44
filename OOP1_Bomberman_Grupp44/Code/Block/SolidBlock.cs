@@ -1,4 +1,4 @@
-namespace Bomberman;
+namespace Bomberman.Block;
 
 class SolidBlock : IBlock
 {

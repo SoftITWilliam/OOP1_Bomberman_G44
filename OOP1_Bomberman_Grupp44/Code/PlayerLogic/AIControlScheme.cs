@@ -1,3 +1,5 @@
+namespace Bomberman.PlayerLogic;
+
 class AIControlScheme : IControlScheme
 {
     public (int dx, int dy, bool placedBomb) GetDirection(IEnumerable<string> keys)
