@@ -21,11 +21,15 @@ class SolidBlock : IBlock
 
     public void DrawAt(int cx, int cy)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            Console.SetCursorPosition(cx, cy + i);
-            Console.Write("███████");
-        }
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.BackgroundColor = ConsoleColor.Gray;
+        Console.SetCursorPosition(cx, cy);
+        Console.Write("██▖████");
+        Console.SetCursorPosition(cx, cy + 1);
+        Console.Write("▆▆▆▆▆▖▆");
+        Console.SetCursorPosition(cx, cy + 2);
+        Console.Write("▆▆▖▆▆▆▆");
+        Console.BackgroundColor = ConsoleColor.Black;
     }
 }
     
