@@ -6,7 +6,7 @@ public class Program
 {
     static void Main(string[] args) 
     {
-        Game game = new Game(Level.StarPattern());
+        Game game = new Game(Level.StarLevel());
 
         Player p1 = new(0, 0, 
             controls: new KeyboardControlScheme(ControlType.Wasd)) 
@@ -24,8 +24,8 @@ public class Program
 
         KeyInput.Start();
 
-        game.AddPlayer(p1);
-        game.AddPlayer(p2);
+        game.Level.AddPlayer(p1);
+        game.Level.AddPlayer(p2);
 
         Console.CursorVisible = false;
         Console.Clear();
