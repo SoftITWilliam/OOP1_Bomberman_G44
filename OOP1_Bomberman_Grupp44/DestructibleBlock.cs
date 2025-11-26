@@ -22,17 +22,9 @@ class DestructibleBlock : IBlock
 
     public void DrawAt(int cx, int cy)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            Console.SetCursorPosition(cx, cy + i);
-            if (isDestroyed)
-            {
-                ConsoleUtils.WriteWithColor("░░░░░░░", ConsoleColor.DarkGray);
-            }
-            else
-            {
-                ConsoleUtils.WriteWithColor("▒▒▒▒▒▒▒", ConsoleColor.White);
-            }
-        }
+        if (isDestroyed)
+            ConsoleUtils.DrawFullBlock(cx, cy, '░', ConsoleColor.DarkGray);
+        else
+            ConsoleUtils.DrawFullBlock(cx, cy, '▒', ConsoleColor.White);
     }
 }

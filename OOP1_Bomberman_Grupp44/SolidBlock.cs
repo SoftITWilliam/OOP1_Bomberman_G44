@@ -23,12 +23,24 @@ class SolidBlock : IBlock
     {
         Console.ForegroundColor = ConsoleColor.White;
         Console.BackgroundColor = ConsoleColor.Gray;
-        Console.SetCursorPosition(cx, cy);
-        Console.Write("██▖████");
-        Console.SetCursorPosition(cx, cy + 1);
-        Console.Write("▆▆▆▆▆▖▆");
-        Console.SetCursorPosition(cx, cy + 2);
-        Console.Write("▆▆▖▆▆▆▆");
+
+        if (this.Y % 2 == 0)
+        {
+            ConsoleUtils.DrawMultiline(cx, cy,
+                "▆▆▖▆▆▆▆",
+                "▆▆▆▆▆▖▆",
+                "▆▆▖▆▆▆▆"
+            );
+        }
+        else
+        {
+            ConsoleUtils.DrawMultiline(cx, cy,
+                "▆▆▆▆▆▖▆",
+                "▆▆▖▆▆▆▆",
+                "▆▆▆▆▆▖▆"
+            );
+        }
+        
         Console.BackgroundColor = ConsoleColor.Black;
     }
 }

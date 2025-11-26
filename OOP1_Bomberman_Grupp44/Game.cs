@@ -177,20 +177,16 @@ class Game
     public void DrawTitle()
     {
         // Det här ser bra ut när vi är i spelet, lita på mig
-        Console.SetCursorPosition(LevelMargin.Left, 0);
-        Console.Write    ("               _—");
+        ConsoleUtils.DrawMultiline(LevelMargin.Left, 0,
+            "               _—",
+            " ______     __<___     __    __     ______     ______     ______     __    __     ______     __   __    ",
+            "/\\  == \\   /\\     \\   /\\ '-./  \\   /\\  == \\   /\\  ___\\   /\\  == \\   /\\ '-./  \\   /\\  __ \\   /\\ '-.\\ \\   ",
+            "\\ \\  __<   \\ \\     \\  \\ \\ \\-./\\ \\  \\ \\  __<   \\ \\  __\\   \\ \\  __<   \\ \\ \\-./\\ \\  \\ \\  __ \\  \\ \\ \\-.  \\  ",
+            " \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\'\\_\\ ",
+            "  \\/_____/   \\/_____/   \\/_/  \\/_/   \\/_____/   \\/_____/   \\/_/ /_/   \\/_/  \\/_/   \\/_/\\/_/   \\/_/ \\/_/ "
+        );
+        Console.SetCursorPosition(LevelMargin.Left + 17, 0);
         ConsoleUtils.WriteWithColor("¤", ConsoleColor.Red);
-        Console.SetCursorPosition(LevelMargin.Left, 1);
-        Console.WriteLine(" ______     __<___     __    __     ______     ______     ______     __    __     ______     __   __    ");
-        Console.SetCursorPosition(LevelMargin.Left, 2);
-        Console.WriteLine("/\\  == \\   /\\     \\   /\\ '-./  \\   /\\  == \\   /\\  ___\\   /\\  == \\   /\\ '-./  \\   /\\  __ \\   /\\ '-.\\ \\   ");
-        Console.SetCursorPosition(LevelMargin.Left, 3);
-        Console.WriteLine("\\ \\  __<   \\ \\     \\  \\ \\ \\-./\\ \\  \\ \\  __<   \\ \\  __\\   \\ \\  __<   \\ \\ \\-./\\ \\  \\ \\  __ \\  \\ \\ \\-.  \\  ");
-        Console.SetCursorPosition(LevelMargin.Left, 4);
-        Console.WriteLine(" \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\'\\_\\ ");
-        Console.SetCursorPosition(LevelMargin.Left, 5);
-        Console.WriteLine("  \\/_____/   \\/_____/   \\/_/  \\/_/   \\/_____/   \\/_____/   \\/_/ /_/   \\/_/  \\/_/   \\/_/\\/_/   \\/_/ \\/_/ ");
-        Console.SetCursorPosition(LevelMargin.Left, 6);
     }
 
     public void DrawBorder()
@@ -279,13 +275,6 @@ class Game
 
 internal class EmptySpace : IDrawable
 {
-    private string space = string.Empty.PadLeft(Game.BlockCharWidth, ' ');
-    public void DrawAt(int cx, int cy)
-    {
-        for (int i = 0; i < Game.BlockCharHeight; i++)
-        {
-            Console.SetCursorPosition(cx, cy + i);
-            Console.Write(space);
-        }
-    }
+    public void DrawAt(int cx, int cy) =>
+        ConsoleUtils.DrawFullBlock(cx, cy, ' ');
 }
