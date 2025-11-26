@@ -77,7 +77,7 @@ class Bomb : IDrawable
     public void DrawAt(int cx, int cy)
     {
         Console.SetCursorPosition(cx + 1, cy);
-        ConsoleUtils.WriteWithColor("*^\\", ConsoleColor.DarkRed);
+        ConsoleUtils.WriteWithColor("¤^\\", ConsoleColor.DarkRed);
         Console.SetCursorPosition(cx + 1, cy + 1);
         ConsoleUtils.WriteWithColor("(   )", ConsoleColor.DarkRed);
         Console.SetCursorPosition(cx + 2, cy + 2);

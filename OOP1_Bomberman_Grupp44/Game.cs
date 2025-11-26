@@ -10,7 +10,7 @@ class Game
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
     private readonly (int Top, int Bottom, int Left, int Right) LevelMargin = 
     (
-        Top: 6, 
+        Top: 7, 
         Bottom: 1, 
         Left: 2, 
         Right: 2
@@ -177,16 +177,19 @@ class Game
     {
         // Det här ser bra ut när vi är i spelet, lita på mig
         Console.SetCursorPosition(LevelMargin.Left, 0);
-        Console.WriteLine(" ______     ______     __    __     ______     ______     ______     __    __     ______     __   __    ");
+        Console.Write    ("               _—");
+        ConsoleUtils.WriteWithColor("¤", ConsoleColor.Red);
         Console.SetCursorPosition(LevelMargin.Left, 1);
-        Console.WriteLine("/\\  == \\   /\\  __ \\   /\\ '-./  \\   /\\  == \\   /\\  ___\\   /\\  == \\   /\\ '-./  \\   /\\  __ \\   /\\ '-.\\ \\   ");
+        Console.WriteLine(" ______     __<___     __    __     ______     ______     ______     __    __     ______     __   __    ");
         Console.SetCursorPosition(LevelMargin.Left, 2);
-        Console.WriteLine("\\ \\  __<   \\ \\ \\/\\ \\  \\ \\ \\-./\\ \\  \\ \\  __<   \\ \\  __\\   \\ \\  __<   \\ \\ \\-./\\ \\  \\ \\  __ \\  \\ \\ \\-.  \\  ");
+        Console.WriteLine("/\\  == \\   /\\     \\   /\\ '-./  \\   /\\  == \\   /\\  ___\\   /\\  == \\   /\\ '-./  \\   /\\  __ \\   /\\ '-.\\ \\   ");
         Console.SetCursorPosition(LevelMargin.Left, 3);
-        Console.WriteLine(" \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\'\\_\\ ");
+        Console.WriteLine("\\ \\  __<   \\ \\     \\  \\ \\ \\-./\\ \\  \\ \\  __<   \\ \\  __\\   \\ \\  __<   \\ \\ \\-./\\ \\  \\ \\  __ \\  \\ \\ \\-.  \\  ");
         Console.SetCursorPosition(LevelMargin.Left, 4);
-        Console.WriteLine("  \\/_____/   \\/_____/   \\/_/  \\/_/   \\/_____/   \\/_____/   \\/_/ /_/   \\/_/  \\/_/   \\/_/\\/_/   \\/_/ \\/_/ ");
+        Console.WriteLine(" \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\'\\_\\ ");
         Console.SetCursorPosition(LevelMargin.Left, 5);
+        Console.WriteLine("  \\/_____/   \\/_____/   \\/_/  \\/_/   \\/_____/   \\/_____/   \\/_/ /_/   \\/_/  \\/_/   \\/_/\\/_/   \\/_/ \\/_/ ");
+        Console.SetCursorPosition(LevelMargin.Left, 6);
     }
 
     public void DrawBorder()
