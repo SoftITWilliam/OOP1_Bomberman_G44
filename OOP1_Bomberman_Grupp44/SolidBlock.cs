@@ -6,7 +6,7 @@ class SolidBlock : IBlock
     public int X => x; //? ska den ha en setter?
     public int Y  => y;
 
-    public bool Collidible => true; // Har alltid kollision
+    public bool HasCollision => true; // Har alltid kollision
 
     public SolidBlock(int X, int Y)
     {

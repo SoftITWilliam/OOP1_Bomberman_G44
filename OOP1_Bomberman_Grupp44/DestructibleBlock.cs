@@ -13,7 +13,7 @@ class DestructibleBlock : IBlock
     public int Y  => y; 
 
     private bool isDestroyed = false;
-    public bool Collidible => isDestroyed == false;
+    public bool HasCollision => isDestroyed == false;
 
     public void Destroy()
     {

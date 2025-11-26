@@ -38,7 +38,8 @@ class Game
     public Game()
     {
         //level = Level.CreateTestLevel();
-        level = Level.Classic();
+        //level = Level.Classic();
+        level = Level.Test();
     }
 
     public void AddPlayer(Player player) 
