@@ -1,18 +1,19 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualBasic;
 
 namespace Bomberman;
 
-class Game 
+class Game
 {
-    public const int FPS = 10;    
+    public const int FPS = 10;
     public static int FrameDurationMs => 1000 / FPS;
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
-    private readonly (int Top, int Bottom, int Left, int Right) LevelMargin = 
+    private readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
     (
-        Top: 7, 
-        Bottom: 1, 
-        Left: 2, 
+        Top: 7,
+        Bottom: 1,
+        Left: 2,
         Right: 2
     );
 
@@ -20,11 +21,11 @@ class Game
     public const int BlockCharWidth = 7;
     public const int BlockCharHeight = 3;
 
-    private int MinConsoleWidth => 
-        (level.Width * BlockCharWidth) + LevelMargin.Left + LevelMargin.Right;
+    private int MinConsoleWidth =>
+        (Level.Width * BlockCharWidth) + LevelMargin.Left + LevelMargin.Right;
 
     private int MinConsoleHeight =>
-        (level.Height * BlockCharHeight) + LevelMargin.Top + LevelMargin.Bottom;
+        (Level.Height * BlockCharHeight) + LevelMargin.Top + LevelMargin.Bottom;
 
     private bool InvalidConsoleSize() =>
         Console.WindowHeight < MinConsoleHeight ||
@@ -32,23 +33,20 @@ class Game
 
     private EmptySpace emptySpace = new EmptySpace();
 
-    private Level level;
-    public Level Level => level;
+    public Level Level { get; private set; }
 
-    public Game()
+    public Game(Level level)
     {
-        //level = Level.CreateTestLevel();
-        //level = Level.Classic();
-        level = Level.StarPattern();
+        this.Level = level;
     }
 
-    public void AddPlayer(Player player) 
+    public void AddPlayer(Player player)
     {
-        level.Players.Add(player);
+        Level.Players.Add(player);
         Console.WriteLine($"Added player: {player.Name}");
     }
 
-    public void Start()
+    public void GameLoop()
     {
         Console.Clear();
 
@@ -70,73 +68,79 @@ class Game
                 DrawTitle();
                 InitialDraw();
             }
-            
-            var input = KeyInput.ReadAll();
 
-            // Uppdatera alla spelare
-            foreach (Player player in level.Players)
-            {
-                // Spara spelarens position innan och efter inputhanteringen.
-                (int x1, int y1) = (player.X, player.Y);
-                player.HandleInput(input, level);
-                (int x2, int y2) = (player.X, player.Y);
+            List<string> input = KeyInput.ReadAll();
 
-                // Om spelaren har rört på sig - rita om gamla och nya positionen.
-                // Detta är för att undvika onödiga redraws.
-                if (x1 != x2 || y1 != y2)
-                {
-                    RedrawPosition(x1, y1);
-                    RedrawPosition(x2, y2);
-                }
-            }
+            UpdatePlayers(input);
+            UpdateBombs();
 
-            // Uppdatera alla bomber
-            foreach (Bomb bomb in level.Bombs)
-            {
-                // Om bomben exploderar så returnerar Update-metoden
-                // en lista med sprängda positioner.
-                var affectedblocks = bomb.Update();
-                if (affectedblocks == null) continue;
-
-                // Ta bort alla block inom de sprängda positionerna
-                foreach (var (x, y) in affectedblocks)
-                {
-                    if (level.IsOutOfBounds(x, y)) continue;
-
-                    if (level.TryGetBlockAt(x, y, out IBlock? block))
-                    {
-                        block.Destroy();
-                    }
-                    RedrawPosition(x, y);
-                }
-
-                // Skada alla spelare inom de sprängda positionerna
-                foreach (var (x, y) in affectedblocks)
-                {
-                    if (level.IsOutOfBounds(x, y)) continue;
-                    if (level.TryGetPlayerAt(x, y, out Player? player))
-                    {
-                        player.TakeDamage();
-                    }
-                    RedrawPosition(x, y);
-                }
-            }
-
-            // Tar bort färdigexploderade bomber från listan
-            level.Bombs.RemoveAll(b =>
-            {
-                if (b.DoneExploding)
-                    RedrawPosition(b.X, b.Y);
-                return b.DoneExploding;
-            });
-
-            
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;
 
             Thread.Sleep(FrameDurationMs);
         }
+    }
+
+    private void UpdatePlayers(List<string> input)
+    {
+        foreach (Player player in Level.Players)
+        {
+            // Spara spelarens position innan och efter inputhanteringen.
+            (int x1, int y1) = (player.X, player.Y);
+            player.HandleInput(input, Level);
+            (int x2, int y2) = (player.X, player.Y);
+
+            // Om spelaren har rört på sig - rita om gamla och nya positionen.
+            // Detta är för att undvika onödiga redraws.
+            if (x1 != x2 || y1 != y2)
+            {
+                RedrawPosition(x1, y1);
+                RedrawPosition(x2, y2);
+            }
+        }
+    }
+
+    private void UpdateBombs()
+    {
+        // Uppdatera alla bomber
+        foreach (Bomb bomb in Level.Bombs)
+        {
+            // Om bomben exploderar så returnerar Update-metoden
+            // en lista med sprängda positioner.
+            var affectedblocks = bomb.Update();
+            if (affectedblocks == null) continue;
+
+            // Ta bort alla block inom de sprängda positionerna
+            foreach (var (x, y) in affectedblocks)
+            {
+                if (Level.IsOutOfBounds(x, y)) continue;
+
+                if (Level.TryGetBlockAt(x, y, out IBlock? block))
+                {
+                    block.Destroy();
+                }
+                RedrawPosition(x, y);
+            }
+
+            // Skada alla spelare inom de sprängda positionerna
+            foreach (var (x, y) in affectedblocks)
+            {
+                if (Level.IsOutOfBounds(x, y)) continue;
+                if (Level.TryGetPlayerAt(x, y, out Player? player))
+                {
+                    player.TakeDamage();
+                }
+                RedrawPosition(x, y);
+            }
+        }
+        // Tar bort färdigexploderade bomber från listan
+        Level.Bombs.RemoveAll(b =>
+        {
+            if (b.DoneExploding)
+                RedrawPosition(b.X, b.Y);
+            return b.DoneExploding;
+        });
     }
 
     private void EnsureValidConsoleSize()
@@ -151,14 +155,14 @@ class Game
 
             string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}";
 
-            ConsoleColor c1 = Console.WindowWidth < MinConsoleWidth 
-                ? ConsoleColor.Red 
+            ConsoleColor c1 = Console.WindowWidth < MinConsoleWidth
+                ? ConsoleColor.Red
                 : ConsoleColor.Green;
 
             string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}";
 
-            ConsoleColor c2 = Console.WindowHeight < MinConsoleHeight 
-                ? ConsoleColor.Red 
+            ConsoleColor c2 = Console.WindowHeight < MinConsoleHeight
+                ? ConsoleColor.Red
                 : ConsoleColor.Green;
 
             ConsoleUtils.WriteWithColor(txt1, c1);
@@ -191,12 +195,12 @@ class Game
 
     public void DrawBorder()
     {
-        int frameWidth = (level.Width * BlockCharWidth + 2);
-        int frameHeight = (level.Height * BlockCharHeight);
+        int frameWidth = (Level.Width * BlockCharWidth + 2);
+        int frameHeight = (Level.Height * BlockCharHeight);
 
-        string topFrame = string.Empty.PadLeft(frameWidth,'▄');
-        string bottomFrame = string.Empty.PadLeft(frameWidth,'▀');
-        
+        string topFrame = string.Empty.PadLeft(frameWidth, '▄');
+        string bottomFrame = string.Empty.PadLeft(frameWidth, '▀');
+
         // Draw top of frame
         int frameX = LevelMargin.Left - 1;
         int frameY = LevelMargin.Top - 1;
@@ -213,7 +217,7 @@ class Game
         }
 
         // Draw bottom of frame
-        frameY = LevelMargin.Top + level.Height * BlockCharHeight;
+        frameY = LevelMargin.Top + Level.Height * BlockCharHeight;
         Console.SetCursorPosition(frameX, frameY);
         Console.Write(bottomFrame);
     }
@@ -221,9 +225,9 @@ class Game
     // Rita ut alla block och spelare. Körs en gång vid spelets start.
     public void InitialDraw()
     {
-       for (int y = 0; y < level.Height; y++)
+        for (int y = 0; y < Level.Height; y++)
         {
-            for (int x = 0; x < level.Width; x++)
+            for (int x = 0; x < Level.Width; x++)
             {
                 RedrawPosition(x, y);
             }
@@ -234,25 +238,25 @@ class Game
     private void RedrawPosition(int x, int y)
     {
         // Rita bakgrundsobjekt (block och tomrum)
-        if (level.TryGetBlockAt(x, y, out var block))
+        if (Level.TryGetBlockAt(x, y, out var block))
         {
             DrawAt(x, y, block);
-        } 
+        }
         else
         {
             DrawAt(x, y, emptySpace);
         }
 
         // Rita förgrundsobjekt (spelare, bomber, TODO powerups)
-        if (level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
+        if (Level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
         {
             DrawAt(x, y, player);
         }
-        else if(level.TryGetBombAt(x, y, out var bomb) && !bomb.HasExploded)
+        else if (Level.TryGetBombAt(x, y, out var bomb) && !bomb.HasExploded)
         {
             DrawAt(x, y, bomb);
         }
-    } 
+    }
 
     // Rita ut ett drawable-objekt på en position
     // (x och y refererar till positioner i spelets rutnät)
