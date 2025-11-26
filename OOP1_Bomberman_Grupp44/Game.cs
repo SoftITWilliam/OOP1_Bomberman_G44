@@ -6,16 +6,25 @@ class Game
 {
     public const int FPS = 10;    
     public static int FrameDurationMs => 1000 / FPS;
-    private const int LevelCursorOffsetX = 5;
-    private const int LevelCursorOffsetY = 3;
-    private const int BlockCharWidth = 7;
-    private const int BlockCharHeight = 3;
+
+    // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
+    private readonly (int Top, int Bottom, int Left, int Right) LevelMargin = 
+    (
+        Top: 6, 
+        Bottom: 1, 
+        Left: 2, 
+        Right: 2
+    );
+
+    // Definierar hur många tecken varje position i rutnätet består av
+    public const int BlockCharWidth = 7;
+    public const int BlockCharHeight = 3;
 
     private int MinConsoleWidth => 
-        (level.Width * BlockCharWidth) + (LevelCursorOffsetX * 2);
+        (level.Width * BlockCharWidth) + LevelMargin.Left + LevelMargin.Right;
 
     private int MinConsoleHeight =>
-        (level.Height * BlockCharHeight) + (LevelCursorOffsetY * 2);
+        (level.Height * BlockCharHeight) + LevelMargin.Top + LevelMargin.Bottom;
 
     private bool InvalidConsoleSize() =>
         Console.WindowHeight < MinConsoleHeight ||
@@ -47,18 +56,23 @@ class Game
 
         DrawBorder();
         InitialDraw();
+        DrawTitle();
 
         while (true)
         {
+            // Om konsolen ändras till en ogiltig storlek under spelets gång,
+            // så pausas spelet tills att den är stor nog igen.
             if (InvalidConsoleSize())
             {
                 EnsureValidConsoleSize();
                 DrawBorder();
-                RedrawAll();
+                DrawTitle();
+                InitialDraw();
             }
             
             var input = KeyInput.ReadAll();
 
+            // Uppdatera alla spelare
             foreach (Player player in level.Players)
             {
                 // Spara spelarens position innan och efter inputhanteringen.
@@ -74,10 +88,16 @@ class Game
                     RedrawPosition(x2, y2);
                 }
             }
+
+            // Uppdatera alla bomber
             foreach (Bomb bomb in level.Bombs)
             {
+                // Om bomben exploderar så returnerar Update-metoden
+                // en lista med sprängda positioner.
                 var affectedblocks = bomb.Update();
                 if (affectedblocks == null) continue;
+
+                // Ta bort alla block inom de sprängda positionerna
                 foreach (var (x, y) in affectedblocks)
                 {
                     if (level.IsOutOfBounds(x, y)) continue;
@@ -88,6 +108,8 @@ class Game
                     }
                     RedrawPosition(x, y);
                 }
+
+                // Skada alla spelare inom de sprängda positionerna
                 foreach (var (x, y) in affectedblocks)
                 {
                     if (level.IsOutOfBounds(x, y)) continue;
@@ -97,11 +119,9 @@ class Game
                     }
                     RedrawPosition(x, y);
                 }
-            
-                
             }
 
-            //tar bort färdigexploderade bomber från listan
+            // Tar bort färdigexploderade bomber från listan
             level.Bombs.RemoveAll(b =>
             {
                 if (b.DoneExploding)
@@ -114,7 +134,6 @@ class Game
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;
 
-            //Redraw();
             Thread.Sleep(FrameDurationMs);
         }
     }
@@ -154,6 +173,22 @@ class Game
         Console.Clear();
     }
 
+    public void DrawTitle()
+    {
+        // Det här ser bra ut när vi är i spelet, lita på mig
+        Console.SetCursorPosition(LevelMargin.Left, 0);
+        Console.WriteLine(" ______     ______     __    __     ______     ______     ______     __    __     ______     __   __    ");
+        Console.SetCursorPosition(LevelMargin.Left, 1);
+        Console.WriteLine("/\\  == \\   /\\  __ \\   /\\ '-./  \\   /\\  == \\   /\\  ___\\   /\\  == \\   /\\ '-./  \\   /\\  __ \\   /\\ '-.\\ \\   ");
+        Console.SetCursorPosition(LevelMargin.Left, 2);
+        Console.WriteLine("\\ \\  __<   \\ \\ \\/\\ \\  \\ \\ \\-./\\ \\  \\ \\  __<   \\ \\  __\\   \\ \\  __<   \\ \\ \\-./\\ \\  \\ \\  __ \\  \\ \\ \\-.  \\  ");
+        Console.SetCursorPosition(LevelMargin.Left, 3);
+        Console.WriteLine(" \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\ \\_\\  \\ \\_\\ \\_\\  \\ \\_\\\\'\\_\\ ");
+        Console.SetCursorPosition(LevelMargin.Left, 4);
+        Console.WriteLine("  \\/_____/   \\/_____/   \\/_/  \\/_/   \\/_____/   \\/_____/   \\/_/ /_/   \\/_/  \\/_/   \\/_/\\/_/   \\/_/ \\/_/ ");
+        Console.SetCursorPosition(LevelMargin.Left, 5);
+    }
+
     public void DrawBorder()
     {
         int frameWidth = (level.Width * BlockCharWidth + 2);
@@ -163,8 +198,8 @@ class Game
         string bottomFrame = string.Empty.PadLeft(frameWidth,'▀');
         
         // Draw top of frame
-        int frameX = LevelCursorOffsetX - 1;
-        int frameY = LevelCursorOffsetY - 1;
+        int frameX = LevelMargin.Left - 1;
+        int frameY = LevelMargin.Top - 1;
         Console.SetCursorPosition(frameX, frameY);
         Console.Write(topFrame);
 
@@ -178,26 +213,15 @@ class Game
         }
 
         // Draw bottom of frame
-        frameY = LevelCursorOffsetY + level.Height * BlockCharHeight;
+        frameY = LevelMargin.Top + level.Height * BlockCharHeight;
         Console.SetCursorPosition(frameX, frameY);
         Console.Write(bottomFrame);
     }
 
+    // Rita ut alla block och spelare. Körs en gång vid spelets start.
     public void InitialDraw()
     {
-        foreach (IBlock block in level.Blocks)
-        {
-            DrawAt(block.X, block.Y, block);
-        }
-        foreach (Player player in level.Players)
-        {
-            DrawAt(player.X, player.Y, player);
-        }
-    }
-
-    public void RedrawAll()
-    {
-        for (int y = 0; y < level.Height; y++)
+       for (int y = 0; y < level.Height; y++)
         {
             for (int x = 0; x < level.Width; x++)
             {
@@ -206,17 +230,20 @@ class Game
         }
     }
 
+    // Rita ut en position i spelet.
     private void RedrawPosition(int x, int y)
     {
+        // Rita bakgrundsobjekt (block och tomrum)
         if (level.TryGetBlockAt(x, y, out var block))
         {
             DrawAt(x, y, block);
-        }
+        } 
         else
         {
             DrawAt(x, y, emptySpace);
         }
 
+        // Rita förgrundsobjekt (spelare, bomber, TODO powerups)
         if (level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
         {
             DrawAt(x, y, player);
@@ -227,6 +254,8 @@ class Game
         }
     } 
 
+    // Rita ut ett drawable-objekt på en position
+    // (x och y refererar till positioner i spelets rutnät)
     private void DrawAt(int x, int y, IDrawable drawable)
     {
         (int cX, int cY) = GetCursorPosition(x, y);
@@ -238,21 +267,18 @@ class Game
     // Returnerar konsolens cursor-position för level-koordinaten
     public (int cX, int cY) GetCursorPosition(int x, int y)
     {
-        int cX = LevelCursorOffsetX + (x * BlockCharWidth);
-        int cY = LevelCursorOffsetY + (y * BlockCharHeight);
+        int cX = LevelMargin.Left + (x * BlockCharWidth);
+        int cY = LevelMargin.Top + (y * BlockCharHeight);
         return (cX, cY);
     }
-
-    public (int cX, int cY) GetCursorPosition(IBlock block) => 
-        GetCursorPosition(block.X, block.Y);
 }
 
 internal class EmptySpace : IDrawable
 {
-    private string space = string.Empty.PadLeft(7, ' ');
+    private string space = string.Empty.PadLeft(Game.BlockCharWidth, ' ');
     public void DrawAt(int cx, int cy)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < Game.BlockCharHeight; i++)
         {
             Console.SetCursorPosition(cx, cy + i);
             Console.Write(space);
