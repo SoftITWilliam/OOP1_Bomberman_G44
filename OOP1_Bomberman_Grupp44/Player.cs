@@ -6,9 +6,9 @@ class Player : IDrawable
     public required ConsoleColor Color { get; init; }
     public int X { get; private set; }
     public int Y { get; private set; }
-    public int MaxHP { get; private set; } = 2;
     public int HP { get; private set; }
-    public bool IsAlive { get; private set; }
+    public bool IsAlive => HP > 0;
+    
     private int BlastRange = 1; //för att skicka in i bomb
     private int AvailableBombs = 1;
     private readonly IControlScheme controls;
@@ -17,8 +17,7 @@ class Player : IDrawable
     {
         (X, Y) = (startX, startY);
         this.controls = controls;
-        HP = MaxHP;
-        IsAlive = true;
+        HP = 2;
     }
 
     public void HandleInput(IEnumerable<string> keys, Level level)
@@ -49,30 +48,22 @@ class Player : IDrawable
 
     public void TakeDamage(int amount = 1)
     {
-        if (!IsAlive) return;
-        HP -= amount;
-        if (HP <= 0) Destroy();
+        HP = Math.Max(0, HP - amount);
+    }
 
-    }
-    public void Destroy()
-    {
-        if (!IsAlive) return;
-        IsAlive = false;
-    }
-    
     public void AddAvailableBomb()
     {
         AvailableBombs += 1;
     }
+
     public Bomb? PlaceBomb()
     {
-        if (AvailableBombs <= 0) return null;
-        if (!IsAlive) return null;
+        if (AvailableBombs <= 0 || !IsAlive) 
+            return null;
 
         AvailableBombs -= 1;
         return new Bomb(this, BlastRange);
     }
-
 
     public void DrawAt(int cx, int cy)
     {
