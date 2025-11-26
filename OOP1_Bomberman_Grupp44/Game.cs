@@ -39,7 +39,7 @@ class Game
     {
         //level = Level.CreateTestLevel();
         //level = Level.Classic();
-        level = Level.Test();
+        level = Level.StarPattern();
     }
 
     public void AddPlayer(Player player) 
