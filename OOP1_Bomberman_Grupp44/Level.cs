@@ -129,7 +129,7 @@ class Level
     public bool TryGetPlayerAt(int x, int y,
         [NotNullWhen(true)] out Player? player)
     {
-        player = Players.Find(p => p.X == x && p.Y == y);
+        player = Players.Find(p => p.X == x && p.Y == y && p.IsAlive);
         return player != null;
     }
     public bool TryGetBlockAt(int x, int y,
