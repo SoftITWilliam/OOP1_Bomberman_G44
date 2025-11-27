@@ -190,6 +190,7 @@ class Game
     private void DrawTitle()
     {
         // Det här ser bra ut när vi är i spelet, lita på mig
+        Console.ForegroundColor = ConsoleColor.White;
         ConsoleUtils.DrawMultiline(LevelMargin.Left, 0,
             "               _—",
             " ______     __<___     __    __     ______     ______     ______     __    __     ______     __   __    ",
@@ -204,6 +205,8 @@ class Game
 
     private void DrawBorder()
     {
+        Console.ForegroundColor = ConsoleColor.White;
+        
         int frameWidth = (Level.Width * BlockCharWidth + 2);
         int frameHeight = (Level.Height * BlockCharHeight);
 
