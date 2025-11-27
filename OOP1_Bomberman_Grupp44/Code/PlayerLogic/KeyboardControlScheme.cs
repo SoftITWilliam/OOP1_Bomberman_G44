@@ -1,8 +1,10 @@
+using System.Transactions;
+
 namespace Bomberman.PlayerLogic;
 
 public enum ControlType
 {
-    Wasd, Arrows
+    Wasd, Arrows, MenuControls
 }
 
 class KeyboardControlScheme : IControlScheme
@@ -26,6 +28,13 @@ class KeyboardControlScheme : IControlScheme
                 left = ConsoleKey.LeftArrow;
                 right = ConsoleKey.RightArrow;
                 placebomb = ConsoleKey.OemPeriod;
+                break;
+            case ControlType.MenuControls:
+                up = ConsoleKey.UpArrow;
+                down = ConsoleKey.DownArrow;
+                left = ConsoleKey.LeftArrow;
+                right = ConsoleKey.RightArrow;
+                placebomb = ConsoleKey.Enter;
                 break;
         }
     }

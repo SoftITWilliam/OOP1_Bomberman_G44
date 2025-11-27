@@ -4,9 +4,15 @@ namespace Bomberman;
 
 public class Program 
 {
-    static void Main(string[] args) 
+    static void Main(string[] args)
     {
-        Game game = new Game(Level.StarLevel());
+        Console.CursorVisible = false;
+        KeyInput.Start();
+
+        Menu menu = new Menu();
+        menu.StartingMenu(); 
+        var test = menu.ChooseLevel();
+        Game game = new Game(test);
 
         Player p1 = new(0, 0, 
             controls: new KeyboardControlScheme(ControlType.Wasd)) 
@@ -22,12 +28,9 @@ public class Program
             Color = ConsoleColor.Red 
         };
 
-        KeyInput.Start();
-
         game.Level.AddPlayer(p1);
         game.Level.AddPlayer(p2);
 
-        Console.CursorVisible = false;
         Console.Clear();
         game.GameLoop();
     }
