@@ -8,7 +8,7 @@ class Player : IDrawable
     public int Y { get; private set; }
     public int HP { get; private set; }
     public bool IsAlive => HP > 0;
-    private int BlastRange = 1; //för att skicka in i bomb
+    public int BlastRange { get; private set; } = 1; //för att skicka in i bomb
     private int AvailableBombs = 1;
     private readonly IControlScheme controls;
 
