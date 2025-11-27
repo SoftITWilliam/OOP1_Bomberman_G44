@@ -69,6 +69,8 @@ class Game
             UpdatePlayers(input);
             UpdateBombs();
 
+            Level.Powerups.RemoveAll(powerup => powerup.HasBeenUsed);
+
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
                 break;
@@ -92,6 +94,12 @@ class Game
             {
                 RedrawPosition(x1, y1);
                 RedrawPosition(x2, y2);
+            }
+
+            if (Level.TryGetPowerupAt(player.X, player.Y, out var powerup) && 
+                powerup.HasBeenUsed == false)
+            {
+                powerup.Use(player, Level, this);
             }
         }
     }
@@ -236,7 +244,7 @@ class Game
     }
 
     // Rita ut en position i spelet.
-    private void RedrawPosition(int x, int y)
+    public void RedrawPosition(int x, int y)
     {
         if (Level.IsOutOfBounds(x, y))
             return;
@@ -251,7 +259,7 @@ class Game
             DrawAt(x, y, emptySpace);
         }
 
-        // Rita förgrundsobjekt (explosioner, spelare, bomber, TODO powerups)
+        // Rita förgrundsobjekt (explosioner, spelare, bomber, powerups)
         if (Level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
         {
             DrawAt(x, y, player);
@@ -259,6 +267,10 @@ class Game
         else if (Level.TryGetBombAt(x, y, out var bomb) && !bomb.HasExploded)
         {
             DrawAt(x, y, bomb);
+        }
+        else if (Level.TryGetPowerupAt(x, y, out var powerup))
+        {
+            DrawAt(x, y, powerup);
         }
     }
 
@@ -276,9 +288,20 @@ class Game
     private void DrawAt(int x, int y, IDrawable drawable)
     {
         (int cX, int cY) = ConsoleUtils.GetCursorPosition(x, y);
-
-        Console.SetCursorPosition(cX, cY);
-        drawable.DrawAt(cX, cY);
+        try
+        {
+            Console.SetCursorPosition(cX, cY);
+            drawable.DrawAt(cX, cY);
+        }
+        catch
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            ConsoleUtils.DrawMultiline(cX, cY,
+                "[ERROR]",
+                "[ERROR]",
+                "[ERROR]");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Bomberman.Block;
 using Bomberman.PlayerLogic;
+using Bomberman.Powerups;
 
 namespace Bomberman;
 
@@ -17,6 +18,8 @@ class Level
     public List<Player> Players = new List<Player>();
     private List<IBlock> Blocks { get; } = new List<IBlock>();
     public List<Bomb> Bombs { get; } = new List<Bomb>();
+    public List<IPowerup> Powerups { get; } = new List<IPowerup>();
+
     private Level(int width, int height)
     {
         Width = width;
@@ -112,6 +115,9 @@ class Level
             (10,1), (10,9), (11, 1), (11,3), (11,7), (11,9), (12,0),
             (12,4), (12,6), (12,10), (13,5), (14,2), (14,8)
         };
+
+        lvl.AddPowerup(new BombRainPowerup(0, 5));
+
         foreach (var (x, y) in SolidBlockPositions)
             lvl.AddBlock(new SolidBlock(x, y));
         foreach(var(x,y) in DestrucBlockPositions)
@@ -142,6 +148,30 @@ class Level
             throw new Exception("Player is out of bounds");
         }
         Players.Add(player);
+    }
+    public void AddPowerup(IPowerup powerup)
+    {
+        if (IsOutOfBounds(powerup.X, powerup.Y))
+        {
+            throw new Exception("Powerup is out of bounds");
+        }
+        Powerups.Add(powerup);
+    }
+
+    public void SpawnRandomPowerup(int x, int y)
+    {
+        Random rand = new Random();
+
+        // Välj slumpmässig powerup typ
+        IPowerup powerup = rand.Next(0, 4) switch
+        {
+            0 => new HealthPowerup(x, y),
+            1 => new RangePowerup(x, y),
+            2 => new BombCountPowerup(x, y),
+            3 => new BombRainPowerup(x, y),
+            _ => throw new Exception()
+        };
+        AddPowerup(powerup);
     }
    
     private (int x, int y) GetCornerPosition(Corners corner) => corner switch
@@ -175,6 +205,13 @@ class Level
     {
         bomb = Bombs.Find(b => b.X == x && b.Y == y);
         return bomb != null;
+    }
+
+    public bool TryGetPowerupAt(int x, int y,
+        [NotNullWhen(true)] out IPowerup? powerup)
+    {
+        powerup = Powerups.Find(p => p.X == x && p.Y == y);
+        return powerup != null;
     }
 
     public bool HasCollidibleBlockAt(int x, int y) =>

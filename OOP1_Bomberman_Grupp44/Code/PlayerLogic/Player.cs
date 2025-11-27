@@ -55,6 +55,11 @@ class Player : IDrawable
         AvailableBombs += 1;
     }
 
+    public void UpgradeBombs()
+    {
+        BlastRange += 1;
+    }
+
     public Bomb? PlaceBomb()
     {
         if (AvailableBombs <= 0 || !IsAlive) 
