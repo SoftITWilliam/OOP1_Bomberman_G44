@@ -5,8 +5,8 @@ namespace Bomberman;
 
 class Game
 {
-    public const int FPS = 10;
-    public static int FrameDurationMs => 1000 / FPS;
+    private const int FPS = 10;
+    private static int FrameDurationMs => 1000 / FPS;
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
     private readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
@@ -39,8 +39,6 @@ class Game
     {
         this.Level = level;
     }
-
-  
 
     public void GameLoop()
     {
@@ -174,7 +172,7 @@ class Game
         Console.Clear();
     }
 
-    public void DrawTitle()
+    private void DrawTitle()
     {
         // Det här ser bra ut när vi är i spelet, lita på mig
         ConsoleUtils.DrawMultiline(LevelMargin.Left, 0,
@@ -189,7 +187,7 @@ class Game
         ConsoleUtils.WriteWithColor("¤", ConsoleColor.Red);
     }
 
-    public void DrawBorder()
+    private void DrawBorder()
     {
         int frameWidth = (Level.Width * BlockCharWidth + 2);
         int frameHeight = (Level.Height * BlockCharHeight);
@@ -219,7 +217,7 @@ class Game
     }
 
     // Rita ut alla block och spelare. Körs en gång vid spelets start.
-    public void InitialDraw()
+    private void InitialDraw()
     {
         for (int y = 0; y < Level.Height; y++)
         {
@@ -265,7 +263,7 @@ class Game
     }
 
     // Returnerar konsolens cursor-position för level-koordinaten
-    public (int cX, int cY) GetCursorPosition(int x, int y)
+    private (int cX, int cY) GetCursorPosition(int x, int y)
     {
         int cX = LevelMargin.Left + (x * BlockCharWidth);
         int cY = LevelMargin.Top + (y * BlockCharHeight);
