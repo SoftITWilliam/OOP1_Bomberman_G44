@@ -49,5 +49,12 @@ public class BombRainPowerup : IPowerup
     public void DrawAt(int cx, int cy)
     {
         (this as IPowerup).DrawBubble(cx, cy);   
+
+        Console.SetCursorPosition(cx + 1, cy);
+        ConsoleUtils.WriteWithColor("▟███▙", ConsoleColor.DarkGray);
+        Console.SetCursorPosition(cx + 1, cy + 1);
+        ConsoleUtils.WriteWithColor(" ::: ", ConsoleColor.Blue);
+        Console.SetCursorPosition(cx + 1, cy + 2);
+        ConsoleUtils.WriteWithColor(" ::: ", ConsoleColor.Blue);
     }
 }

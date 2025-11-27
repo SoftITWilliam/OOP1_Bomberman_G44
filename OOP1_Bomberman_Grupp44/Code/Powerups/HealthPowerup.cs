@@ -22,5 +22,15 @@ public class HealthPowerup : IPowerup
     public void DrawAt(int cx, int cy)
     {
         (this as IPowerup).DrawBubble(cx, cy);
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        ConsoleUtils.DrawMultiline(cx + 1, cy,
+        " ▄ ▄ ",
+        "▝███▘",
+        "  ▀ ");
+
+        
+
+
     }
 }

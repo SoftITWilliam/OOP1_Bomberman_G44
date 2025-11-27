@@ -17,9 +17,9 @@ interface IPowerup : IDrawable
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.SetCursorPosition(cx, cy);
         ConsoleUtils.DrawMultiline(cx, cy,
-            "/     \\",
-            "|     |",
-            "\\     /");
+            "▞     ▚",
+            "▌     ▐",
+            "▚     ▞");
         Console.ForegroundColor = ConsoleColor.White;
     }
 }

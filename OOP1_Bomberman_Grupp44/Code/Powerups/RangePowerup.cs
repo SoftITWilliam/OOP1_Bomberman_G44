@@ -22,5 +22,17 @@ public class RangePowerup : IPowerup
     public void DrawAt(int cx, int cy)
     {
         (this as IPowerup).DrawBubble(cx, cy);
+
+        
+        //ConsoleUtils.WriteWithColor("+1", ConsoleColor.Green);
+
+        Console.SetCursorPosition(cx + 2, cy);
+        Console.Write(ConsoleUtils.AnsiOrange("▖▄▗"));
+        Console.SetCursorPosition(cx + 1, cy + 1);
+        Console.Write("←");
+        Console.Write(ConsoleUtils.AnsiOrange("▐█▌"));
+        Console.Write("→");
+        Console.SetCursorPosition(cx + 2, cy + 2);
+        Console.Write(ConsoleUtils.AnsiOrange("▘▀▝"));
     }
 }
