@@ -43,38 +43,64 @@ class Bomb : IDrawable
         this.color = Color;
     }
 
-    public List<(int x, int y)>? Update()
+    // Körs varje frame.
+    // Metoden kollar bombens timer. När bomben exploderar så returnerar den true
+    public bool Update()
     {
         var elapsedMs = (DateTime.Now - placedTime).TotalMilliseconds;
-        if (!HasExploded && elapsedMs >= MsRemaining) return Explode();
-        else return null; //returnera ingenting om tiden inte är ute
+        if (!HasExploded && elapsedMs >= MsRemaining)
+        {
+            Explode();
+            return true;
+        } 
+        else return false; //returnera ingenting om tiden inte är ute
     }
 
-    private List<(int x, int y)> Explode()
+    private void Explode()
     {
         HasExploded = true;
         TimeOfExplosion = DateTime.Now;
         bombOwner?.AddAvailableBomb();
-        return ExplosionRange();
     }
 
-    public List<(int x, int y)> ExplosionRange()
+    // Returnerar alla koordinater som påverkas av explosionen.
+    // Hanterar automatiskt koordinater som går utanför banan eller som blockeras av solida block
+    public List<(int x, int y)> GetAffectedTiles(Level level)
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
         int px = X;
         int py = Y;
 
         InRange.Add((px, py)); //bombens egen ruta
-        for (int i = 1; i <= blastRange; i++)
+
+        // Vänster
+        for (int x = px; x >= px - blastRange; x--)
         {
-            InRange.Add((px - i, py));
-            InRange.Add((px + i, py));
-            InRange.Add((px, py - i));
-            InRange.Add((px, py + i));
+            if (CheckExplosionIsBlocked(level, x, py)) break;
+            InRange.Add((x, py));
+        }
+        // Höger
+        for (int x = px; x <= px + blastRange; x++)
+        {
+            if (CheckExplosionIsBlocked(level, x, py)) break;
+            InRange.Add((x, py));
+        }
+        // Upp
+        for (int y = py; y >= py - blastRange; y--)
+        {
+            if (CheckExplosionIsBlocked(level, px, y)) break;
+            InRange.Add((px, y));
+        }
+        // Ner
+        for (int y = py; y <= py + blastRange; y++)
+        {
+            if (CheckExplosionIsBlocked(level, px, y)) break;
+            InRange.Add((px, y));
         }
         return InRange;
     }
 
+    // Rita ut bomben på banan
     public void DrawAt(int cx, int cy)
     {
         Console.SetCursorPosition(cx + 1, cy);
@@ -85,6 +111,11 @@ class Bomb : IDrawable
         ConsoleUtils.WriteWithColor("`-‘", color);
     }
 
+    private static bool CheckExplosionIsBlocked(Level level, int x, int y) =>
+        level.IsOutOfBounds(x, y) || level.HasSolidBlockAt(x, y);
+    
+
+    // Alla "bitar" av explosionen som ritas ut
     private Dictionary<string, string[]> kaboom = new Dictionary<string, string[]>()
     {
         { "ground-zero", ["\\\\|||//", "=BOOOM=", "//|||\\\\"] },
@@ -97,15 +128,10 @@ class Bomb : IDrawable
         { "right", ["^^^^-\\ ", "=====-)", "vvvv-/ "] },
     };
 
+    // Rita ut hela explosionen på banan -- hanterar OutOfBounds och solida block
     public void DrawExplosion(Level level)
     {
         Console.ForegroundColor = ConsoleColor.Red;
-
-        bool CheckExplosionIsBlocked(int x, int y)
-        {
-            return level.IsOutOfBounds(x, y) 
-                || level.HasCollidibleBlockAt(x, y);
-        }
 
         void DrawExplosion(int x, int y, int i, string[] branchSprite, string[] edgeSprite)
         {
@@ -122,7 +148,7 @@ class Bomb : IDrawable
         for (int i = 1; i <= blastRange; i++)
         {
             int x = X - i;
-            if (CheckExplosionIsBlocked(x, Y)) break;
+            if (CheckExplosionIsBlocked(level, x, Y)) break;
             DrawExplosion(x, Y, i, kaboom["horizontal"], kaboom["left"]);
         }
 
@@ -130,7 +156,7 @@ class Bomb : IDrawable
         for (int i = 1; i <= blastRange; i++)
         {
             int x = X + i;
-            if (CheckExplosionIsBlocked(x, Y)) break;
+            if (CheckExplosionIsBlocked(level, x, Y)) break;
             DrawExplosion(x, Y, i, kaboom["horizontal"], kaboom["right"]);
         }
 
@@ -138,7 +164,7 @@ class Bomb : IDrawable
         for (int i = 1; i <= blastRange; i++)
         {
             int y = Y - i;
-            if (CheckExplosionIsBlocked(X, y)) break;
+            if (CheckExplosionIsBlocked(level, X, y)) break;
             (cx, cy) = ConsoleUtils.GetCursorPosition(X, y);
             DrawExplosion(X, y, i, kaboom["vertical"], kaboom["up"]);
         }
@@ -147,7 +173,7 @@ class Bomb : IDrawable
         for (int i = 1; i <= blastRange; i++)
         {
             int y = Y + i;
-            if (CheckExplosionIsBlocked(X, y)) break;
+            if (CheckExplosionIsBlocked(level, X, y)) break;
             DrawExplosion(X, y, i, kaboom["vertical"], kaboom["down"]);
         }
 

@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Bomberman.Block;
 using Bomberman.PlayerLogic;
 
@@ -102,14 +103,14 @@ class Game
         {
             // Om bomben exploderar så returnerar Update-metoden
             // en lista med sprängda positioner.
-            var affectedblocks = bomb.Update();
-            if (affectedblocks == null) continue;
+            bool explode = bomb.Update();
+            if (!explode) continue;
+
+            var affectedblocks = bomb.GetAffectedTiles(Level);
 
             // Ta bort alla block inom de sprängda positionerna
             foreach (var (x, y) in affectedblocks)
             {
-                if (Level.IsOutOfBounds(x, y)) continue;
-
                 if (Level.TryGetBlockAt(x, y, out IBlock? block))
                 {
                     block.Destroy();
@@ -120,7 +121,6 @@ class Game
             // Skada alla spelare inom de sprängda positionerna
             foreach (var (x, y) in affectedblocks)
             {
-                if (Level.IsOutOfBounds(x, y)) continue;
                 if (Level.TryGetPlayerAt(x, y, out Player? player))
                 {
                     player.TakeDamage();
@@ -134,7 +134,7 @@ class Game
         {
             if (b.DoneExploding)
             {
-                foreach ((int x, int y) in b.ExplosionRange())
+                foreach ((int x, int y) in b.GetAffectedTiles(Level))
                 {
                     RedrawPosition(x, y);
                 }

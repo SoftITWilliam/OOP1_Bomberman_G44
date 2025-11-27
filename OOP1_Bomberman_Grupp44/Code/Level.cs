@@ -162,22 +162,30 @@ class Level
         player = Players.Find(p => p.X == x && p.Y == y && p.IsAlive);
         return player != null;
     }
+    
     public bool TryGetBlockAt(int x, int y,
         [NotNullWhen(true)] out IBlock? block)
     {
         block = Blocks.Find(b => b.X == x && b.Y == y);
         return block != null;
     }
+
     public bool TryGetBombAt(int x, int y,
         [NotNullWhen(true)] out Bomb? bomb)
     {
         bomb = Bombs.Find(b => b.X == x && b.Y == y);
         return bomb != null;
     }
+
     public bool HasCollidibleBlockAt(int x, int y) =>
         TryGetBlockAt(x, y, out var block) && block.HasCollision;
+
+    public bool HasSolidBlockAt(int x, int y) =>
+        TryGetBlockAt(x, y, out var block) && block is SolidBlock;
+
     public bool HasBombAt(int x, int y) =>
         TryGetBombAt(x, y, out var bomb);
+
     public bool HasPlayerAt(int x, int y) =>
         TryGetPlayerAt(x, y, out var player);
 }
