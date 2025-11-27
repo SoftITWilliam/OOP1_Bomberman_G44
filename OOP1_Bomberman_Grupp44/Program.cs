@@ -6,7 +6,7 @@ public class Program
 {
     static void Main(string[] args) 
     {
-        Game game = new Game(Level.StarPattern());
+        Game game = new Game(Level.StarLevel());
 
         Player p1 = new(0, 0, 
             controls: new KeyboardControlScheme(ControlType.Wasd)) 
@@ -18,14 +18,14 @@ public class Program
         Player p2 = new(game.Level.Width - 1, game.Level.Height - 1, 
             controls: new KeyboardControlScheme(ControlType.Arrows)) 
         { 
-            Name = "Bot", 
+            Name = "Also human", 
             Color = ConsoleColor.Red 
         };
 
         KeyInput.Start();
 
-        game.AddPlayer(p1);
-        game.AddPlayer(p2);
+        game.Level.AddPlayer(p1);
+        game.Level.AddPlayer(p2);
 
         Console.CursorVisible = false;
         Console.Clear();

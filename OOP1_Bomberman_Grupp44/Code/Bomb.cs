@@ -3,19 +3,18 @@ using Bomberman.PlayerLogic;
 
 class Bomb : IDrawable
 {
-    private int BlastRange;
-    public ConsoleColor Color;
+    private readonly int blastRange;
+    private readonly ConsoleColor color;
     private const int MsRemaining = 3000;
     private const int MsExplosionTime = 1000;
-    private Player? BombOwner;
-    private readonly DateTime PlacedTime;
-    public DateTime ExplodedTime { get; private set; }
+    private readonly Player? bombOwner;
+    private readonly DateTime placedTime;
+    private DateTime TimeOfExplosion { get; set; } //byt namn på variabeln?
     public bool HasExploded { get; private set; }
-    public bool DoneExploding {
-        get
+    public bool DoneExploding { get
         {
             if (!HasExploded) return false;
-            var elapsedMs = (DateTime.Now - ExplodedTime).TotalMilliseconds;
+            var elapsedMs = (DateTime.Now - TimeOfExplosion).TotalMilliseconds;
             return elapsedMs >= MsExplosionTime;
         }}
     public int X { get; }
@@ -24,50 +23,49 @@ class Bomb : IDrawable
     //konstruktor för bomb beroende av spelare:
     public Bomb(Player player, int BlastRange)
     {
-        this.BlastRange = BlastRange;
-        BombOwner = player;
-        PlacedTime = DateTime.Now;
+        this.blastRange = BlastRange;
+        bombOwner = player;
+        placedTime = DateTime.Now;
         HasExploded = false;
         X = player.X;
         Y = player.Y;
-        Color = ConsoleColor.DarkRed;
+        color = ConsoleColor.DarkRed;
     }
     //konstruktor för game-genererade bomber:
     public Bomb(int X, int Y, int BlastRange, ConsoleColor Color)
     {
-        this.BlastRange = BlastRange;
-        BombOwner = null;
-        PlacedTime = DateTime.Now;
+        this.blastRange = BlastRange;
+        bombOwner = null;
+        placedTime = DateTime.Now;
         HasExploded = false;
         this.X = X;
         this.Y = Y;
-        this.Color = Color;
+        this.color = Color;
     }
 
     public List<(int x, int y)>? Update()
     {
-        var elapsedMs = (DateTime.Now - PlacedTime).TotalMilliseconds;
+        var elapsedMs = (DateTime.Now - placedTime).TotalMilliseconds;
         if (!HasExploded && elapsedMs >= MsRemaining) return Explode();
         else return null; //returnera ingenting om tiden inte är ute
     }
 
-    private List<(int x, int y)> Explode() //behöver både denna och Update vara public?
+    private List<(int x, int y)> Explode()
     {
         HasExploded = true;
-        ExplodedTime = DateTime.Now;
-        BombOwner?.AddAvailableBomb();
+        TimeOfExplosion = DateTime.Now;
+        bombOwner?.AddAvailableBomb();
         return ExplosionRange();
     }
 
-
-    public List<(int x, int y)> ExplosionRange()
+    private List<(int x, int y)> ExplosionRange()
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
         int px = X;
         int py = Y;
 
-        InRange.Add((px, py)); //bombens ruta
-        for (int i = 1; i <= BlastRange; i++)
+        InRange.Add((px, py)); //bombens egen ruta
+        for (int i = 1; i <= blastRange; i++)
         {
             InRange.Add((px - i, py));
             InRange.Add((px + i, py));
@@ -80,11 +78,11 @@ class Bomb : IDrawable
     public void DrawAt(int cx, int cy)
     {
         Console.SetCursorPosition(cx + 1, cy);
-        ConsoleUtils.WriteWithColor("¤^\\", Color);
+        ConsoleUtils.WriteWithColor("¤^\\", color);
         Console.SetCursorPosition(cx + 1, cy + 1);
-        ConsoleUtils.WriteWithColor("(   )", Color);
+        ConsoleUtils.WriteWithColor("(   )", color);
         Console.SetCursorPosition(cx + 2, cy + 2);
-        ConsoleUtils.WriteWithColor("`-‘", Color);
+        ConsoleUtils.WriteWithColor("`-‘", color);
     }
 
     private Dictionary<string, string[]> kaboom = new Dictionary<string, string[]>()

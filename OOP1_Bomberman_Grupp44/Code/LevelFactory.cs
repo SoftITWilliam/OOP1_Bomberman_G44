@@ -1,33 +1,16 @@
-
-
-using System.Diagnostics.CodeAnalysis;
+/*using System.Diagnostics.CodeAnalysis;
 using Bomberman.Block;
 using Bomberman.PlayerLogic;
 
 namespace Bomberman;
 
-class Level
+static class LevelFactory
 {
-    public enum Corners
-    {
-        TopLeft, TopRight, BottomLeft, BottomRight
-    }
-    public int Width { get; }
-    public int Height { get; }
-    public List<Player> Players = new List<Player>();
-    private List<IBlock> Blocks { get; } = new List<IBlock>();
-    public List<Bomb> Bombs { get; } = new List<Bomb>();
-    private Level(int width, int height)
-    {
-        Width = width;
-        Height = height;
-    }
-
     public static Level TestLevel()
     {
         Level lvl = new Level(7, 5);
 
-        lvl.AddBlock(new SolidBlock(1, 1));
+        AddBlock(new SolidBlock(1, 1), lvl);
         lvl.AddBlock(new SolidBlock(1, 2));
         lvl.AddBlock(new SolidBlock(1, 3));
 
@@ -114,70 +97,18 @@ class Level
         };
         foreach (var (x, y) in SolidBlockPositions)
             lvl.AddBlock(new SolidBlock(x, y));
-        foreach(var(x,y) in DestrucBlockPositions)
+        foreach (var (x, y) in DestrucBlockPositions)
             lvl.AddBlock(new DestructibleBlock(x, y));
         return lvl;
     }
 
-    private void AddBlock(IBlock block)
+    private static void AddBlock(IBlock block, Level level)
     {
-        if (IsOutOfBounds(block.X, block.Y))
+        if (level.IsOutOfBounds(block.X, block.Y))
         {
             throw new Exception("Block is out of bounds");
         }
-        Blocks.Add(block);
+        level.Blocks.Add(block);
     }
-    public void AddBomb(Bomb bomb)
-    {
-        if (IsOutOfBounds(bomb.X, bomb.Y))
-        {
-            throw new Exception("Bomb is out of bounds");
-        }
-        Bombs.Add(bomb);
-    }
-    public void AddPlayer(Player player)
-    {
-        if (IsOutOfBounds(player.X, player.Y))
-        {
-            throw new Exception("Player is out of bounds");
-        }
-        Players.Add(player);
-    }
-   
-    private (int x, int y) GetCornerPosition(Corners corner) => corner switch
-    {
-        Corners.TopLeft => (0, 0),
-        Corners.TopRight => (Width - 1, 0),
-        Corners.BottomLeft => (0, Height - 1),
-        Corners.BottomRight => (Width - 1, Height - 1),
-        _ => throw new ArgumentException(null, nameof(corner)),
-    };
 
-    public bool IsOutOfBounds(int x, int y) => 
-        (x < 0 || x >= Width || y < 0 || y >= Height);
-
-    public bool TryGetPlayerAt(int x, int y,
-        [NotNullWhen(true)] out Player? player)
-    {
-        player = Players.Find(p => p.X == x && p.Y == y && p.IsAlive);
-        return player != null;
-    }
-    public bool TryGetBlockAt(int x, int y,
-        [NotNullWhen(true)] out IBlock? block)
-    {
-        block = Blocks.Find(b => b.X == x && b.Y == y);
-        return block != null;
-    }
-    public bool TryGetBombAt(int x, int y,
-        [NotNullWhen(true)] out Bomb? bomb)
-    {
-        bomb = Bombs.Find(b => b.X == x && b.Y == y);
-        return bomb != null;
-    }
-    public bool HasCollidibleBlockAt(int x, int y) =>
-        TryGetBlockAt(x, y, out var block) && block.HasCollision;
-    public bool HasBombAt(int x, int y) =>
-        TryGetBombAt(x, y, out var bomb);
-    public bool HasPlayerAt(int x, int y) =>
-        TryGetPlayerAt(x, y, out var player);
-}
+}*/

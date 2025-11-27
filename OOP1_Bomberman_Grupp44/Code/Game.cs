@@ -5,8 +5,8 @@ namespace Bomberman;
 
 class Game
 {
-    public const int FPS = 10;
-    public static int FrameDurationMs => 1000 / FPS;
+    private const int FPS = 10;
+    private static int FrameDurationMs => 1000 / FPS;
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
     public static readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
@@ -38,12 +38,6 @@ class Game
     public Game(Level level)
     {
         this.Level = level;
-    }
-
-    public void AddPlayer(Player player)
-    {
-        Level.Players.Add(player);
-        Console.WriteLine($"Added player: {player.Name}");
     }
 
     public void GameLoop()
@@ -185,7 +179,7 @@ class Game
         Console.Clear();
     }
 
-    public void DrawTitle()
+    private void DrawTitle()
     {
         // Det här ser bra ut när vi är i spelet, lita på mig
         ConsoleUtils.DrawMultiline(LevelMargin.Left, 0,
@@ -200,7 +194,7 @@ class Game
         ConsoleUtils.WriteWithColor("¤", ConsoleColor.Red);
     }
 
-    public void DrawBorder()
+    private void DrawBorder()
     {
         int frameWidth = (Level.Width * BlockCharWidth + 2);
         int frameHeight = (Level.Height * BlockCharHeight);
@@ -230,7 +224,7 @@ class Game
     }
 
     // Rita ut alla block och spelare. Körs en gång vid spelets start.
-    public void InitialDraw()
+    private void InitialDraw()
     {
         for (int y = 0; y < Level.Height; y++)
         {
@@ -286,8 +280,6 @@ class Game
         Console.SetCursorPosition(cX, cY);
         drawable.DrawAt(cX, cY);
     }
-
-    
 }
 
 internal class EmptySpace : IDrawable

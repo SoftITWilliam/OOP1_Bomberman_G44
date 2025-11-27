@@ -2,15 +2,14 @@ namespace Bomberman.Block;
 
 class DestructibleBlock : IBlock
 {
-    private int x;
-    private int y;
-    public DestructibleBlock(int X, int Y)
-    {
-        this.x = X;
-        this.y = Y;
-    }
+    private readonly int x, y;
     public int X => x; 
     public int Y  => y; 
+    public DestructibleBlock(int X, int Y)
+    {
+        x = X;
+        y = Y;
+    }
 
     private bool isDestroyed = false;
     public bool HasCollision => isDestroyed == false;
