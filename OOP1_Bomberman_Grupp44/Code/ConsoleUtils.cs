@@ -38,4 +38,12 @@ public static class ConsoleUtils
         int cY = Game.LevelMargin.Top + (y * Game.BlockCharHeight);
         return (cX, cY);
     }
+
+    // Det finns ingen orange färg i ConsoleColor! Wtf!
+    public static string AnsiOrange(string text) =>
+        $"\e[0;38;2;255;127;63;49m{text}\e[0m";
+    
+    public static string[] AnsiOrange(IEnumerable<string> strings) =>
+        strings.Select(s => AnsiOrange(s)).ToArray();
+    
 } 

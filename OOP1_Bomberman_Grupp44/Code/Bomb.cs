@@ -131,18 +131,17 @@ class Bomb : IDrawable
     // Rita ut hela explosionen på banan -- hanterar OutOfBounds och solida block
     public void DrawExplosion(Level level)
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-
         void DrawExplosion(int x, int y, int i, string[] branchSprite, string[] edgeSprite)
         {
             (int cx, int cy) = ConsoleUtils.GetCursorPosition(x, y);
             var sprite = i == blastRange ? edgeSprite : branchSprite;
-            ConsoleUtils.DrawMultiline(cx, cy, sprite);
+            
+            ConsoleUtils.DrawMultiline(cx, cy, ConsoleUtils.AnsiOrange(sprite));
         }
 
         // Center
         (int cx, int cy) = ConsoleUtils.GetCursorPosition(X, Y);
-        ConsoleUtils.DrawMultiline(cx, cy, kaboom["ground-zero"]);
+        ConsoleUtils.DrawMultiline(cx, cy, ConsoleUtils.AnsiOrange(kaboom["ground-zero"]));
 
         // Vänster gren
         for (int i = 1; i <= blastRange; i++)
@@ -176,8 +175,5 @@ class Bomb : IDrawable
             if (CheckExplosionIsBlocked(level, X, y)) break;
             DrawExplosion(X, y, i, kaboom["vertical"], kaboom["down"]);
         }
-
-        Console.ForegroundColor = ConsoleColor.White;
-
     }
 }
