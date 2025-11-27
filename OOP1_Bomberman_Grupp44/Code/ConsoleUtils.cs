@@ -30,4 +30,12 @@ public static class ConsoleUtils
             Console.Write(lines[i]);
         }
     }
+
+    // Returnerar konsolens cursor-position för level-koordinaten
+    public static (int cX, int cY) GetCursorPosition(int x, int y)
+    {
+        int cX = Game.LevelMargin.Left + (x * Game.BlockCharWidth);
+        int cY = Game.LevelMargin.Top + (y * Game.BlockCharHeight);
+        return (cX, cY);
+    }
 } 

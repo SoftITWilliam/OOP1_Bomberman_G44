@@ -86,4 +86,74 @@ class Bomb : IDrawable
         Console.SetCursorPosition(cx + 2, cy + 2);
         ConsoleUtils.WriteWithColor("`-‘", Color);
     }
+
+    private Dictionary<string, string[]> kaboom = new Dictionary<string, string[]>()
+    {
+        { "ground-zero", ["\\\\|||//", "=BOOOM=", "//|||\\\\"] },
+        { "horizontal", ["^^^^^^^", "=======", "vvvvvvv"] },
+        { "vertical", ["<|||||>", "<|||||>", "<|||||>"] },
+
+        { "up", ["/~~~~~\\", "\\|||||/", "\\|||||/"] },
+        { "down", ["/|||||\\", "/|||||\\", "\\~~~~~/"] },
+        { "left", [" /-^^^^", "(-=====", " \\-vvvv"] },
+        { "right", ["^^^^-\\ ", "=====-)", "vvvv-/ "] },
+    };
+
+    public void DrawExplosion(Level level)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+
+        bool CheckExplosionIsBlocked(int x, int y)
+        {
+            return level.IsOutOfBounds(x, y) 
+                || level.HasCollidibleBlockAt(x, y);
+        }
+
+        void DrawExplosion(int x, int y, int i, string[] branchSprite, string[] edgeSprite)
+        {
+            (int cx, int cy) = ConsoleUtils.GetCursorPosition(x, y);
+            var sprite = i == BlastRange ? edgeSprite : branchSprite;
+            ConsoleUtils.DrawMultiline(cx, cy, sprite);
+        }
+
+        // Center
+        (int cx, int cy) = ConsoleUtils.GetCursorPosition(X, Y);
+        ConsoleUtils.DrawMultiline(cx, cy, kaboom["ground-zero"]);
+
+        // Vänster gren
+        for (int i = 1; i <= BlastRange; i++)
+        {
+            int x = X - i;
+            if (CheckExplosionIsBlocked(x, Y)) break;
+            DrawExplosion(x, Y, i, kaboom["horizontal"], kaboom["left"]);
+        }
+
+        // Höger gren
+        for (int i = 1; i <= BlastRange; i++)
+        {
+            int x = X + i;
+            if (CheckExplosionIsBlocked(x, Y)) break;
+            DrawExplosion(x, Y, i, kaboom["horizontal"], kaboom["right"]);
+        }
+
+        // Uppåt gren
+        for (int i = 1; i <= BlastRange; i++)
+        {
+            int y = Y - i;
+            if (CheckExplosionIsBlocked(X, y)) break;
+            (cx, cy) = ConsoleUtils.GetCursorPosition(X, y);
+            DrawExplosion(X, y, i, kaboom["vertical"], kaboom["up"]);
+        }
+
+        // Neråt gren
+        for (int i = 1; i <= BlastRange; i++)
+        {
+            int y = Y + i;
+            if (CheckExplosionIsBlocked(X, y)) break;
+            DrawExplosion(X, y, i, kaboom["vertical"], kaboom["down"]);
+        }
+
+        Console.ForegroundColor = ConsoleColor.White;
+
+    }
 }

@@ -9,7 +9,7 @@ class Game
     public static int FrameDurationMs => 1000 / FPS;
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
-    private readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
+    public static readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
     (
         Top: 7,
         Bottom: 1,
@@ -134,32 +134,39 @@ class Game
                 RedrawPosition(x, y);
             }
         }
+
         // Tar bort färdigexploderade bomber från listan
         Level.Bombs.RemoveAll(b =>
         {
             if (b.DoneExploding)
-                RedrawPosition(b.X, b.Y);
+            {
+                foreach ((int x, int y) in b.ExplosionRange())
+                {
+                    RedrawPosition(x, y);
+                }
+            }
             return b.DoneExploding;
         });
+
+        DrawExplosions();
     }
 
     private void EnsureValidConsoleSize()
     {
-        Console.SetCursorPosition(0, 0);
+        Console.Clear();
         while (InvalidConsoleSize())
         {
-            Console.Clear();
-
+            Console.SetCursorPosition(0, 0);
             Console.WriteLine("Fönstret är för litet!");
             Console.WriteLine("För att starta spelet, öka storleken");
 
-            string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}";
+            string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}     ";
 
             ConsoleColor c1 = Console.WindowWidth < MinConsoleWidth
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
 
-            string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}";
+            string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}     ";
 
             ConsoleColor c2 = Console.WindowHeight < MinConsoleHeight
                 ? ConsoleColor.Red
@@ -237,6 +244,9 @@ class Game
     // Rita ut en position i spelet.
     private void RedrawPosition(int x, int y)
     {
+        if (Level.IsOutOfBounds(x, y))
+            return;
+
         // Rita bakgrundsobjekt (block och tomrum)
         if (Level.TryGetBlockAt(x, y, out var block))
         {
@@ -247,7 +257,7 @@ class Game
             DrawAt(x, y, emptySpace);
         }
 
-        // Rita förgrundsobjekt (spelare, bomber, TODO powerups)
+        // Rita förgrundsobjekt (explosioner, spelare, bomber, TODO powerups)
         if (Level.TryGetPlayerAt(x, y, out var player) && player.IsAlive)
         {
             DrawAt(x, y, player);
@@ -258,23 +268,26 @@ class Game
         }
     }
 
+    private void DrawExplosions()
+    {
+        foreach (Bomb bomb in Level.Bombs
+            .Where(bomb => bomb.HasExploded && !bomb.DoneExploding))
+        {
+            bomb.DrawExplosion(Level);
+        }
+    }
+
     // Rita ut ett drawable-objekt på en position
     // (x och y refererar till positioner i spelets rutnät)
     private void DrawAt(int x, int y, IDrawable drawable)
     {
-        (int cX, int cY) = GetCursorPosition(x, y);
+        (int cX, int cY) = ConsoleUtils.GetCursorPosition(x, y);
 
         Console.SetCursorPosition(cX, cY);
         drawable.DrawAt(cX, cY);
     }
 
-    // Returnerar konsolens cursor-position för level-koordinaten
-    public (int cX, int cY) GetCursorPosition(int x, int y)
-    {
-        int cX = LevelMargin.Left + (x * BlockCharWidth);
-        int cY = LevelMargin.Top + (y * BlockCharHeight);
-        return (cX, cY);
-    }
+    
 }
 
 internal class EmptySpace : IDrawable
