@@ -58,7 +58,7 @@ class Bomb : IDrawable
         return ExplosionRange();
     }
 
-    private List<(int x, int y)> ExplosionRange()
+    public List<(int x, int y)> ExplosionRange()
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
         int px = X;
@@ -110,7 +110,7 @@ class Bomb : IDrawable
         void DrawExplosion(int x, int y, int i, string[] branchSprite, string[] edgeSprite)
         {
             (int cx, int cy) = ConsoleUtils.GetCursorPosition(x, y);
-            var sprite = i == BlastRange ? edgeSprite : branchSprite;
+            var sprite = i == blastRange ? edgeSprite : branchSprite;
             ConsoleUtils.DrawMultiline(cx, cy, sprite);
         }
 
@@ -119,7 +119,7 @@ class Bomb : IDrawable
         ConsoleUtils.DrawMultiline(cx, cy, kaboom["ground-zero"]);
 
         // Vänster gren
-        for (int i = 1; i <= BlastRange; i++)
+        for (int i = 1; i <= blastRange; i++)
         {
             int x = X - i;
             if (CheckExplosionIsBlocked(x, Y)) break;
@@ -127,7 +127,7 @@ class Bomb : IDrawable
         }
 
         // Höger gren
-        for (int i = 1; i <= BlastRange; i++)
+        for (int i = 1; i <= blastRange; i++)
         {
             int x = X + i;
             if (CheckExplosionIsBlocked(x, Y)) break;
@@ -135,7 +135,7 @@ class Bomb : IDrawable
         }
 
         // Uppåt gren
-        for (int i = 1; i <= BlastRange; i++)
+        for (int i = 1; i <= blastRange; i++)
         {
             int y = Y - i;
             if (CheckExplosionIsBlocked(X, y)) break;
@@ -144,7 +144,7 @@ class Bomb : IDrawable
         }
 
         // Neråt gren
-        for (int i = 1; i <= BlastRange; i++)
+        for (int i = 1; i <= blastRange; i++)
         {
             int y = Y + i;
             if (CheckExplosionIsBlocked(X, y)) break;
