@@ -26,6 +26,23 @@ class Level
         Height = height;
     }
 
+    public static Dictionary<string, Level> LevelTypes =
+    
+        new Dictionary<string, Level>()
+        {
+            {"Test Level", TestLevel()},
+            {"Classic Level", ClassicLevel()},
+            {"Star Level", StarLevel()}
+        };
+   
+    /*
+    new Dictionary<string, level>() 
+    {
+        { "Test Level", Level.TestLevel() },
+    }
+
+
+    */
     public static Level TestLevel()
     {
         Level lvl = new Level(9, 7);
