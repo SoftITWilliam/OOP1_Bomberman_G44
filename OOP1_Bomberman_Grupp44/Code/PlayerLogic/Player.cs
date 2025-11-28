@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 namespace Bomberman.PlayerLogic;
 
 class Player : IDrawable
@@ -12,6 +14,7 @@ class Player : IDrawable
     public int BlastRange { get; private set; } = 1; //för att skicka in i bomb
     public int AvailableBombs = 1;
     private readonly IControlScheme controls;
+    public bool IsHuman => this.controls is not AIControlScheme;
 
     public Player(int startX, int startY, IControlScheme controls)
     {

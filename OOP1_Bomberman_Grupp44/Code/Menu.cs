@@ -93,15 +93,33 @@ class Menu
                 Color = ConsoleColor.Blue
             };
 
-            AIControlScheme aics = new AIControlScheme(level);
-            Player p2 = new Player(0, 0, aics) 
+            AIControlScheme aics1 = new AIControlScheme(level);
+            Player p2 = new Player(0, 0, aics1) 
             {
                 Name = "Bot",
                 Color = ConsoleColor.Red,
             };
-            aics.SetPlayer(p2);
+            aics1.SetPlayer(p2);
 
-            game.Level.AddPlayers(p1, p2);
+            AIControlScheme aics2 = new AIControlScheme(level);
+            (int x, int y) = level.GetCornerPosition(Level.Corners.TopRight);
+            Player p3 = new Player(x, y, aics2)
+            {
+                Name = "Bro",
+                Color = ConsoleColor.Green,
+            };
+            aics2.SetPlayer(p3);
+
+            AIControlScheme aics3 = new AIControlScheme(level);
+            (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomLeft);
+            Player p4 = new Player(x1, y1, aics3)
+            {
+                Name = "AI_Moa",
+                Color = ConsoleColor.Yellow,
+            };
+            aics3.SetPlayer(p4);
+
+            game.Level.AddPlayers(p1, p2, p3, p4);
             return game;
         }
         else if (index == 1)
@@ -120,8 +138,32 @@ class Menu
             controls: new KeyboardControlScheme(ControlType.Wasd))
             { Name = name2, Color = ConsoleColor.Blue };
             //skapa här 2st AI players
-            game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
+
+            AIControlScheme aics1 = new AIControlScheme(level);
+            (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomLeft);
+            Player p3 = new Player(x1, y1, aics1) 
+            {
+                Name = "Bro",
+                Color = ConsoleColor.Yellow,
+            };
+            aics1.SetPlayer(p3);
+
+            AIControlScheme aics2 = new AIControlScheme(level);
+            (int x2, int y2) = level.GetCornerPosition(Level.Corners.TopRight);
+            Player p4 = new Player(x2, y2, aics2)
+            {
+                Name = "AI_Klara",
+                Color = ConsoleColor.Green,
+            };
+            aics2.SetPlayer(p4);
+
+            game.Level.AddPlayer(p1);
+            game.Level.AddPlayer(p2);
+            game.Level.AddPlayer(p3);
+            game.Level.AddPlayer(p4);
             return game;
+
+            
         }
         else
         {

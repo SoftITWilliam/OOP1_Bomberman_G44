@@ -201,7 +201,7 @@ class Level
         AddPowerup(powerup);
     }
    
-    private (int x, int y) GetCornerPosition(Corners corner) => corner switch
+    public (int x, int y) GetCornerPosition(Corners corner) => corner switch
     {
         Corners.TopLeft => (0, 0),
         Corners.TopRight => (Width - 1, 0),
