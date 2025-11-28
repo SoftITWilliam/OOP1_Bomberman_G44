@@ -25,13 +25,13 @@ class Menu
         "En spelare mot datorn", "Två spelare mot datorn", "Två spelare utan datorn" //kalla det något annat än datorn?
     };
 
-    public void StartingMenu()
+    public Game StartingMenu()
     {
         int index = MenuLoop("alternativ", StartOptions);
-        if (index == 0) Instructions();
-        else ChooseLevel();
+        if (index == 0) return Instructions();
+        else return ChooseLevel();
     }
-    private void Instructions()
+    private Game Instructions()
     {
         DestructibleBlock destructible = new DestructibleBlock(0, 0);
         SolidBlock solid = new SolidBlock(0, 0);
@@ -63,14 +63,15 @@ class Menu
             var (dx, dy, pressedEnter) = controls.GetDirection(keys);
             enter = pressedEnter;
         } while (!enter);
-        ChooseLevel();
+        return ChooseLevel();
     }
-    public void ChooseLevel()
+    private Game ChooseLevel()
     {
         int index = MenuLoop("spelplan", LevelNames);
-        ChoosePlayers(LevelTypes[index]);
+        return ChoosePlayers(LevelTypes[index]);
+        
     }
-    public void ChoosePlayers(Level level)
+    private Game ChoosePlayers(Level level)
     {
         Game game = new Game(level);
 
@@ -87,8 +88,7 @@ class Menu
             };
             //skapa här 3st AI players
             game.Level.AddPlayer(p1);
-            Console.Clear();
-            game.GameLoop();
+            return game;
         }
         else if (index == 1)
         {
@@ -107,8 +107,7 @@ class Menu
             { Name = name2, Color = ConsoleColor.Red };
             //skapa här 2st AI players
             game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
-            Console.Clear();
-            game.GameLoop();
+            return game;
         }
         else
         {
@@ -127,8 +126,8 @@ class Menu
             { Name = name2, Color = ConsoleColor.Red };
 
             game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
-            Console.Clear();
-            game.GameLoop();
+            return game;
+        
         }
     }
     private int MenuLoop(string type, List<string> optionsList)
