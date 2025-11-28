@@ -23,6 +23,12 @@ class Player : IDrawable
     {
         var (dx, dy, placedBomb) = controls.GetDirection(keys);
 
+        if (placedBomb)
+        {
+            var bomb = PlaceBomb();
+            if (bomb != null) level.AddBomb(bomb);
+        }
+
         if (!level.IsOutOfBounds(X + dx, Y) &&
             !level.HasCollidibleBlockAt(X + dx, Y) &&
             !level.HasBombAt(X + dx, Y) &&
@@ -37,11 +43,6 @@ class Player : IDrawable
             !level.HasPlayerAt(X, Y + dy))
         {
             Y += dy;
-        }
-        if (placedBomb)
-        {
-            var bomb = PlaceBomb();
-            if (bomb != null) level.AddBomb(bomb);
         }
     }
 

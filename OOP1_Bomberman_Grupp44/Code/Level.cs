@@ -154,6 +154,13 @@ class Level
         }
         Players.Add(player);
     }
+
+    public void AddPlayers(params Player[] players)
+    {
+        foreach (var player in players)
+            AddPlayer(player);
+    }
+
     public void AddPowerup(IPowerup powerup)
     {
         if (IsOutOfBounds(powerup.X, powerup.Y))
@@ -230,4 +237,13 @@ class Level
 
     public bool HasPlayerAt(int x, int y) =>
         TryGetPlayerAt(x, y, out var player);
+
+    public bool CheckValidMove(int x, int y) =>
+        !IsOutOfBounds(x, y) && 
+        !HasCollidibleBlockAt(x, y) &&
+        !HasBombAt(x, y) && 
+        !HasPlayerAt(x, y);
+
+    public bool CheckValidMove(Move move) => 
+        CheckValidMove(move.NewX, move.NewY);
 }

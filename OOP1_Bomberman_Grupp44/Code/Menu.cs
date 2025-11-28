@@ -84,10 +84,18 @@ class Menu
                 controls: new KeyboardControlScheme(ControlType.Arrows))
             {
                 Name = name,
-                Color = ConsoleColor.Red
+                Color = ConsoleColor.Blue
             };
-            //skapa här 3st AI players
-            game.Level.AddPlayer(p1);
+
+            AIControlScheme aics = new AIControlScheme(level);
+            Player p2 = new Player(0, 0, aics) 
+            {
+                Name = "Bot",
+                Color = ConsoleColor.Red,
+            };
+            aics.SetPlayer(p2);
+
+            game.Level.AddPlayers(p1, p2);
             return game;
         }
         else if (index == 1)
