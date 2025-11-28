@@ -19,44 +19,56 @@ class Level
     private List<IBlock> Blocks { get; } = new List<IBlock>();
     public List<Bomb> Bombs { get; } = new List<Bomb>();
     public List<IPowerup> Powerups { get; } = new List<IPowerup>();
+    private Action<Level> reset;
 
-    private Level(int width, int height)
+    private Level(int width, int height, Action<Level> reset)
     {
         Width = width;
         Height = height;
+        this.reset = reset;
     }
+    public void Reset()
+    {
+        Blocks.Clear();
+        Bombs.Clear();
+        Powerups.Clear();
+        reset(this);
+    }
+
     public static Level TestLevel()
     {
-        Level lvl = new Level(9, 7);
+        Level lvl = new Level(9, 7, (lvl) =>
+        {
+            lvl.AddBlock(new SolidBlock(1, 1));
+            //lvl.AddBlock(new SolidBlock(1, 2));
+            //lvl.AddBlock(new SolidBlock(1, 3));
 
-        lvl.AddBlock(new SolidBlock(1, 1));
-        //lvl.AddBlock(new SolidBlock(1, 2));
-        //lvl.AddBlock(new SolidBlock(1, 3));
+            //lvl.AddBlock(new DestructibleBlock(3, 1));
+            //lvl.AddBlock(new DestructibleBlock(3, 2));
+            //lvl.AddBlock(new DestructibleBlock(3, 3));
 
-        //lvl.AddBlock(new DestructibleBlock(3, 1));
-        //lvl.AddBlock(new DestructibleBlock(3, 2));
-        //lvl.AddBlock(new DestructibleBlock(3, 3));
+            //lvl.AddBlock(new DestructibleBlock(5, 1));
+            //lvl.AddBlock(new DestructibleBlock(5, 2));
+            //lvl.AddBlock(new DestructibleBlock(5, 3));
 
-        //lvl.AddBlock(new DestructibleBlock(5, 1));
-        //lvl.AddBlock(new DestructibleBlock(5, 2));
-        //lvl.AddBlock(new DestructibleBlock(5, 3));
+            lvl.AddPowerup(new BombRainPowerup(0, 2));
+            lvl.AddPowerup(new RangePowerup(0, 4));
+            lvl.AddPowerup(new BombCountPowerup(2, 2));
+            lvl.AddPowerup(new HealthPowerup(2, 4));
 
-        lvl.AddPowerup(new BombRainPowerup(0, 2));
-        lvl.AddPowerup(new RangePowerup(0, 4));
-        lvl.AddPowerup(new BombCountPowerup(2, 2));
-        lvl.AddPowerup(new HealthPowerup(2, 4));
+            IBlock? b;
+            if (lvl.TryGetBlockAt(5, 1, out b)) b.Destroy();
+            if (lvl.TryGetBlockAt(5, 2, out b)) b.Destroy();
+            if (lvl.TryGetBlockAt(5, 3, out b)) b.Destroy();
+        });
 
-        IBlock? b;
-        if (lvl.TryGetBlockAt(5, 1, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(5, 2, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(5, 3, out b)) b.Destroy();
-
+        lvl.Reset();
         return lvl;
     }
     public static Level ClassicLevel()
     {
-        Level lvl = new Level(15, 11);
-
+        Level lvl = new Level(15, 11, (lvl) =>
+        {
         for (int x = 1; x < lvl.Width; x += 2)
         {
             for (int y = 1; y < lvl.Height; y += 2)
@@ -93,13 +105,14 @@ class Level
         (X, Y) = lvl.GetCornerPosition(Corners.BottomRight);
         if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.Destroy();
         if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.Destroy();
-
+        });
+        lvl.Reset();
         return lvl;
     }
     public static Level StarLevel()
     {
-        Level lvl = new Level(15, 11);
-
+        Level lvl = new Level(15, 11, (lvl) =>
+        {
         var SolidBlockPositions = new (int x, int y)[]
         {
             (0,4), (0,6), (1,1), (1,4), (1,6), (1,9), (2,2),
@@ -127,6 +140,8 @@ class Level
             lvl.AddBlock(new SolidBlock(x, y));
         foreach(var(x,y) in DestrucBlockPositions)
             lvl.AddBlock(new DestructibleBlock(x, y));
+        });
+        lvl.Reset();
         return lvl;
     }
 

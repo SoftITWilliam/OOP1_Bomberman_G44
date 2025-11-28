@@ -24,9 +24,14 @@ class Menu
     {
         "En spelare mot datorn", "Två spelare mot datorn", "Två spelare utan datorn" //kalla det något annat än datorn?
     };
+    private List<string> EndOptions = new List<string>()
+    {
+        "En omgång till!!!", "Starta ett nytt spel", "Avsluta"
+    };
 
     public Game StartingMenu()
     {
+        Console.Clear();
         int index = MenuLoop("alternativ", StartOptions);
         if (index == 0) return Instructions();
         else return ChooseLevel();
@@ -67,6 +72,7 @@ class Menu
     }
     private Game ChooseLevel()
     {
+        Console.Clear();
         int index = MenuLoop("spelplan", LevelNames);
         return ChoosePlayers(LevelTypes[index]);
         
@@ -74,7 +80,7 @@ class Menu
     private Game ChoosePlayers(Level level)
     {
         Game game = new Game(level);
-
+        Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
         if (index == 0)
         {
@@ -102,9 +108,9 @@ class Menu
             Console.Clear();
             Console.WriteLine("Spelare 2");
             string name2 = InputName();
-            Player p2 = new(game.Level.Width - 1, game.Level.Height - 1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            { Name = name2, Color = ConsoleColor.Red };
+            Player p2 = new(0, 0,
+            controls: new KeyboardControlScheme(ControlType.Wasd))
+            { Name = name2, Color = ConsoleColor.Blue };
             //skapa här 2st AI players
             game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
             return game;
@@ -127,15 +133,55 @@ class Menu
 
             game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
             return game;
-        
+
         }
     }
+
+    public void GameOverMenu(Player winner, Game game)
+    {
+        Console.Clear();
+        Console.ForegroundColor = winner.Color;
+        ConsoleUtils.DrawMultiline(30, 0,
+        " ______     __         __  __     ______  ",
+        "/\\  ___\\   /\\ \\       /\\ \\/\\ \\   /\\__  _\\ ",
+        "\\ \\___  \\  \\ \\ \\____  \\ \\ \\_\\ \\  \\/_/\\ \\/ ",
+        " \\/\\_____\\  \\ \\_____\\  \\ \\_____\\    \\ \\_\\ ",
+        "  \\/_____/   \\/_____/   \\/_____/     \\/_/ "
+        );
+        Console.SetCursorPosition(45, 6);
+        Console.WriteLine($"{winner.Name} vinner!");
+        Console.ResetColor();
+        int index = MenuLoop("alternativ", EndOptions);
+        if (index == 0)
+        {
+            foreach (Player player in game.Level.Players)
+            {
+                player.Reset();
+            }
+            game.Level.Reset();
+            game.GameLoop();
+        }
+        if (index == 1)
+        {
+            StartingMenu();
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine("ok hejdå");
+            Environment.Exit(0);
+        }
+        
+    }
+    
+
+     
     private int MenuLoop(string type, List<string> optionsList)
     {
         int selectedIndex = 0;
 
         bool enter = false;
-        Console.Clear();
+        
         do
         {
             Console.SetCursorPosition(0, 0);
@@ -164,7 +210,6 @@ class Menu
         } while (!enter);
         return selectedIndex;
     }
-
     private string InputName() //hjälp av copilot
     {
         string? name;

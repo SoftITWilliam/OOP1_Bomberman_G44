@@ -12,6 +12,7 @@ public class Program
         Menu menu = new Menu();
         var game = menu.StartingMenu();
         Console.Clear();
-        game.GameLoop();
+        var winner = game.GameLoop();
+        menu.GameOverMenu(winner, game);
     }
 }
