@@ -11,10 +11,10 @@ public class Program
 
         Menu menu = new Menu();
         menu.StartingMenu(); 
-        var test = menu.ChooseLevel();
-        Game game = new Game(test);
+        //var test = menu.ChooseLevel();
+        //Game game = new Game(test);
 
-        Player p1 = new(0, 0, 
+        /*Player p1 = new(0, 0, 
             controls: new KeyboardControlScheme(ControlType.Wasd)) 
         { 
             Name = "Human", 
@@ -32,6 +32,6 @@ public class Program
         game.Level.AddPlayer(p2);
 
         Console.Clear();
-        game.GameLoop();
+        game.GameLoop();*/
     }
 }
