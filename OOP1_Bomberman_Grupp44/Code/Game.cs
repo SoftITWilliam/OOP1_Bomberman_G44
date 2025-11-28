@@ -41,7 +41,7 @@ class Game
         this.Level = level;
     }
 
-    public void GameLoop()
+    public Player GameLoop()
     {
         Console.Clear();
 
@@ -73,10 +73,32 @@ class Game
 
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
-                break;
+                Environment.Exit(0);
 
             Thread.Sleep(FrameDurationMs);
+
+            if (GetWinner() is Player winner)
+            {
+                return winner;
+            }
+            
         }
+    }
+
+private Player? GetWinner()
+    {
+        int aliveCount = 0;
+        Player? lastAlive = null;
+        foreach (Player player in Level.Players)
+        {
+            if (player.IsAlive)
+            {
+                aliveCount++;
+                lastAlive = player;
+            }
+        }
+        if (aliveCount == 1 && lastAlive != null) return lastAlive;
+        else return null;
     }
 
     private void UpdatePlayers(List<string> input)
@@ -96,7 +118,7 @@ class Game
                 RedrawPosition(x2, y2);
             }
 
-            if (Level.TryGetPowerupAt(player.X, player.Y, out var powerup) && 
+            if (Level.TryGetPowerupAt(player.X, player.Y, out var powerup) &&
                 powerup.HasBeenUsed == false)
             {
                 powerup.Use(player, Level, this);
