@@ -15,7 +15,7 @@ class Game
         Top: 7,
         Bottom: 1,
         Left: 2,
-        Right: 2
+        Right: 5
     );
 
     // Definierar hur många tecken varje position i rutnätet består av
@@ -51,6 +51,7 @@ class Game
         DrawBorder();
         InitialDraw();
         DrawTitle();
+        DrawScoreBoard();
 
         while (true)
         {
@@ -62,6 +63,7 @@ class Game
                 DrawBorder();
                 DrawTitle();
                 InitialDraw();
+                DrawScoreBoard();
             }
 
             List<string> input = KeyInput.ReadAll();
@@ -85,7 +87,7 @@ class Game
         }
     }
 
-private Player? GetWinner()
+    private Player? GetWinner()
     {
         int aliveCount = 0;
         Player? lastAlive = null;
@@ -107,8 +109,11 @@ private Player? GetWinner()
         {
             // Spara spelarens position innan och efter inputhanteringen.
             (int x1, int y1) = (player.X, player.Y);
+            var bombCountBefore = player.AvailableBombs;
             player.HandleInput(input, Level);
             (int x2, int y2) = (player.X, player.Y);
+            var bombCountAfter = player.AvailableBombs;
+            if (bombCountBefore != bombCountAfter) DrawScoreBoard();
 
             // Om spelaren har rört på sig - rita om gamla och nya positionen.
             // Detta är för att undvika onödiga redraws.
@@ -122,6 +127,7 @@ private Player? GetWinner()
                 powerup.HasBeenUsed == false)
             {
                 powerup.Use(player, Level, this);
+                DrawScoreBoard();
             }
         }
     }
@@ -135,6 +141,7 @@ private Player? GetWinner()
             // en lista med sprängda positioner.
             bool explode = bomb.Update();
             if (!explode) continue;
+            
 
             var affectedblocks = bomb.GetAffectedTiles(Level);
 
@@ -157,6 +164,7 @@ private Player? GetWinner()
                 }
                 RedrawPosition(x, y);
             }
+            DrawScoreBoard();
         }
 
         // Tar bort färdigexploderade bomber från listan
@@ -255,6 +263,26 @@ private Player? GetWinner()
         Console.SetCursorPosition(frameX, frameY);
         Console.Write(bottomFrame);
     }
+
+    private void DrawScoreBoard()
+    {
+        int textHeight = 8;
+        foreach(Player player in Level.Players)
+        {
+            Console.ForegroundColor = player.Color;
+            ConsoleUtils.DrawMultiline((Level.Width * BlockCharWidth) + LevelMargin.Left + 3, textHeight,
+            $"{player.Name}",
+            " ",
+            $"HP: {player.HP}",
+            $"Blast range: {player.BlastRange}",
+            $"Available bombs: {player.AvailableBombs}",
+            " ", " "
+            );
+            Console.ResetColor();
+            textHeight += 8;
+        }
+    }
+
 
     // Rita ut alla block och spelare. Körs en gång vid spelets start.
     private void InitialDraw()
