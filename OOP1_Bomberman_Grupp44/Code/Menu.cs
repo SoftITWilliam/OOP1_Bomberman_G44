@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Transactions;
 using System.Xml;
 using Bomberman.Block;
@@ -22,7 +23,8 @@ class Menu
     };
     private List<string> PlayerOptions = new List<string>()
     {
-        "En spelare mot datorn", "Två spelare mot datorn", "Två spelare utan datorn" //kalla det något annat än datorn?
+        "En spelare mot en datorspelare", "En spelare mot tre datorspelare", 
+        "Två spelare mot två datorspelare", "Två spelare utan datorspelare" //kalla det något annat än datorn?
     };
     private List<string> EndOptions = new List<string>()
     {
@@ -82,108 +84,137 @@ class Menu
         Game game = new Game(level);
         Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
-        if (index == 0)
+
+        (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomRight);
+        (int x2, int y2) = level.GetCornerPosition(Level.Corners.TopLeft);
+        (int x3, int y3) = level.GetCornerPosition(Level.Corners.TopRight);
+        (int x4, int y4) = level.GetCornerPosition(Level.Corners.BottomLeft);
+
+        if (index == 0) //"En spelare mot en datorspelare"
         {
             Console.Clear();
             string name = InputName();
-            Player p1 = new Player(game.Level.Width - 1, game.Level.Height - 1,
-                controls: new KeyboardControlScheme(ControlType.Arrows))
+            Player p1 = new Player(x1, y1,
+            controls: new KeyboardControlScheme(ControlType.Arrows))
             {
                 Name = name,
+                Color = ConsoleColor.Red
+            };
+
+            AIControlScheme aics = new AIControlScheme(level);
+            Player p2 = new Player(x2, y2, aics)
+            {
+                Name = "AI-bomber",
                 Color = ConsoleColor.Blue
+            };
+            aics.SetPlayer(p2);
+
+            game.Level.AddPlayers(p1, p2);
+            return game;
+        }
+        else if (index == 1) //"En spelare mot tre datorspelare"
+        {
+            Console.Clear();
+            string name = InputName();
+            Player p1 = new Player(x1, y1,
+            controls: new KeyboardControlScheme(ControlType.Arrows))
+            {
+                Name = name,
+                Color = ConsoleColor.Red
             };
 
             AIControlScheme aics1 = new AIControlScheme(level);
-            Player p2 = new Player(0, 0, aics1) 
+            Player p2 = new Player(x2, y2, aics1)
             {
-                Name = "Bot",
-                Color = ConsoleColor.Red,
+                Name = "AI-Klara",
+                Color = ConsoleColor.Blue
             };
             aics1.SetPlayer(p2);
 
             AIControlScheme aics2 = new AIControlScheme(level);
-            (int x, int y) = level.GetCornerPosition(Level.Corners.TopRight);
-            Player p3 = new Player(x, y, aics2)
+            Player p3 = new Player(x3, y3, aics2)
             {
-                Name = "Bro",
-                Color = ConsoleColor.Green,
+                Name = "AI-Bro",
+                Color = ConsoleColor.Green
             };
             aics2.SetPlayer(p3);
 
             AIControlScheme aics3 = new AIControlScheme(level);
-            (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomLeft);
-            Player p4 = new Player(x1, y1, aics3)
+            Player p4 = new Player(x4, y4, aics3)
             {
-                Name = "AI_Moa",
-                Color = ConsoleColor.Yellow,
+                Name = "AI-Moa",
+                Color = ConsoleColor.Yellow
             };
             aics3.SetPlayer(p4);
 
             game.Level.AddPlayers(p1, p2, p3, p4);
             return game;
         }
-        else if (index == 1)
+        else if(index == 2) // "Två spelare mot två datorspelare"
         {
             Console.Clear();
             Console.WriteLine("Spelare 1");
             string name1 = InputName();
-            Player p1 = new Player(game.Level.Width - 1, game.Level.Height - 1,
+            Player p1 = new Player(x1, y1,
             controls: new KeyboardControlScheme(ControlType.Arrows))
-            { Name = name1, Color = ConsoleColor.Red };
+            {
+                Name = name1,
+                Color = ConsoleColor.Red
+            };
 
             Console.Clear();
             Console.WriteLine("Spelare 2");
             string name2 = InputName();
-            Player p2 = new(0, 0,
+            Player p2 = new(x2, y2,
             controls: new KeyboardControlScheme(ControlType.Wasd))
-            { Name = name2, Color = ConsoleColor.Blue };
-            //skapa här 2st AI players
+            {
+                Name = name2,
+                Color = ConsoleColor.Blue
+            };
 
             AIControlScheme aics1 = new AIControlScheme(level);
-            (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomLeft);
-            Player p3 = new Player(x1, y1, aics1) 
+            Player p3 = new Player(x3, y3, aics1)
             {
-                Name = "Bro",
-                Color = ConsoleColor.Yellow,
+                Name = "AI-Moa",
+                Color = ConsoleColor.Green,
             };
             aics1.SetPlayer(p3);
 
             AIControlScheme aics2 = new AIControlScheme(level);
-            (int x2, int y2) = level.GetCornerPosition(Level.Corners.TopRight);
-            Player p4 = new Player(x2, y2, aics2)
+            Player p4 = new Player(x4, y4, aics2)
             {
-                Name = "AI_Klara",
-                Color = ConsoleColor.Green,
+                Name = "AI-Klara",
+                Color = ConsoleColor.Yellow,
             };
             aics2.SetPlayer(p4);
 
-            game.Level.AddPlayer(p1);
-            game.Level.AddPlayer(p2);
-            game.Level.AddPlayer(p3);
-            game.Level.AddPlayer(p4);
+            game.Level.AddPlayers(p1, p2, p3, p4);
             return game;
-
-            
         }
-        else
+        else //"Två spelare utan datorn"
         {
             Console.Clear();
             Console.WriteLine("Spelare 1");
             string name1 = InputName();
-            Player p1 = new Player(game.Level.Width - 1, game.Level.Height - 1,
+            Player p1 = new Player(x1, y1,
             controls: new KeyboardControlScheme(ControlType.Arrows))
-            { Name = name1, Color = ConsoleColor.Red };
+            {
+                Name = name1,
+                Color = ConsoleColor.Red
+            };
 
             Console.Clear();
             Console.WriteLine("Spelare 2");
             string name2 = InputName();
-            Player p2 = new(game.Level.Width - 1, game.Level.Height - 1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            { Name = name2, Color = ConsoleColor.Red };
+            Player p2 = new(x2, y2,
+            controls: new KeyboardControlScheme(ControlType.Wasd))
+            {
+                Name = name2,
+                Color = ConsoleColor.Blue
+            };
 
-            game.Level.AddPlayer(p1); game.Level.AddPlayer(p2);
+            game.Level.AddPlayers(p1, p2);
             return game;
-
         }
     }
 
@@ -213,7 +244,17 @@ class Menu
         }
         if (index == 1)
         {
-            StartingMenu();
+            //provade att göra såhär eftersom spelet startades om med de gamla spelarna frf med i scoreboard
+            //men nu verkar det krascha efter att man placerat ut första bomben
+            //moa hjääälp det blev inte så bra här
+            //behöver man skapa ett nytt game? just nu görs det i ChoosePlayers
+            foreach (Player player in game.Level.Players)
+            {
+                player.Reset();
+            }
+            game.Level.Reset();
+            var newGame = StartingMenu();
+            newGame.GameLoop();
         }
         else
         {
@@ -224,8 +265,6 @@ class Menu
         
     }
     
-
-     
     private int MenuLoop(string type, List<string> optionsList)
     {
         int selectedIndex = 0;

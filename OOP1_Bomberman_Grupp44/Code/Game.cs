@@ -270,7 +270,8 @@ class Game
         foreach(Player player in Level.Players)
         {
             Console.ForegroundColor = player.Color;
-            ConsoleUtils.DrawMultiline((Level.Width * BlockCharWidth) + LevelMargin.Left + 3, textHeight,
+            ConsoleUtils.DrawMultiline((Level.Width * BlockCharWidth) +
+            LevelMargin.Left + 3, textHeight,
             $"{player.Name}",
             " ",
             $"HP: {player.HP}",
