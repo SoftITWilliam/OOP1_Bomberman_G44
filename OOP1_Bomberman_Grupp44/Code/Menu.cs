@@ -85,6 +85,9 @@ class Menu
     private Game ChoosePlayers(Level level)
     {
         Game game = new Game(level);
+
+        BotNameGenerator botNames = new BotNameGenerator();
+
         Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
 
@@ -107,7 +110,7 @@ class Menu
             AIControlScheme aics = new AIControlScheme(level);
             Player p2 = new Player(x2, y2, aics)
             {
-                Name = "AI-bomber",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Blue
             };
             aics.SetPlayer(p2);
@@ -129,7 +132,7 @@ class Menu
             AIControlScheme aics1 = new AIControlScheme(level);
             Player p2 = new Player(x2, y2, aics1)
             {
-                Name = "AI-Klara",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Blue
             };
             aics1.SetPlayer(p2);
@@ -137,7 +140,7 @@ class Menu
             AIControlScheme aics2 = new AIControlScheme(level);
             Player p3 = new Player(x3, y3, aics2)
             {
-                Name = "AI-Bro",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Green
             };
             aics2.SetPlayer(p3);
@@ -145,7 +148,7 @@ class Menu
             AIControlScheme aics3 = new AIControlScheme(level);
             Player p4 = new Player(x4, y4, aics3)
             {
-                Name = "AI-Moa",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Yellow
             };
             aics3.SetPlayer(p4);
@@ -178,7 +181,7 @@ class Menu
             AIControlScheme aics1 = new AIControlScheme(level);
             Player p3 = new Player(x3, y3, aics1)
             {
-                Name = "AI-Moa",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Green,
             };
             aics1.SetPlayer(p3);
@@ -186,7 +189,7 @@ class Menu
             AIControlScheme aics2 = new AIControlScheme(level);
             Player p4 = new Player(x4, y4, aics2)
             {
-                Name = "AI-Klara",
+                Name = botNames.GetRandomName(),
                 Color = ConsoleColor.Yellow,
             };
             aics2.SetPlayer(p4);
