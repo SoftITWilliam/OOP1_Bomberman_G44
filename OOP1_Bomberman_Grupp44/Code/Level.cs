@@ -57,9 +57,9 @@ class Level
             lvl.AddPowerup(new HealthPowerup(2, 4));
 
             IBlock? b;
-            if (lvl.TryGetBlockAt(5, 1, out b)) b.Destroy();
-            if (lvl.TryGetBlockAt(5, 2, out b)) b.Destroy();
-            if (lvl.TryGetBlockAt(5, 3, out b)) b.Destroy();
+            if (lvl.TryGetBlockAt(5, 1, out b)) b.TryDestroy();
+            if (lvl.TryGetBlockAt(5, 2, out b)) b.TryDestroy();
+            if (lvl.TryGetBlockAt(5, 3, out b)) b.TryDestroy();
         });
 
         lvl.Reset();
@@ -91,20 +91,20 @@ class Level
         int X, Y;
 
         (X, Y) = (X, Y) = lvl.GetCornerPosition(Corners.TopLeft);
-        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.TryDestroy();
+        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.TryDestroy();
 
         (X, Y) = lvl.GetCornerPosition(Corners.BottomLeft);
-        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.TryDestroy();
+        if (lvl.TryGetBlockAt(X + 1, Y, out b)) b.TryDestroy();
 
         (X, Y) = lvl.GetCornerPosition(Corners.TopRight);
-        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.TryDestroy();
+        if (lvl.TryGetBlockAt(X, Y + 1, out b)) b.TryDestroy();
 
         (X, Y) = lvl.GetCornerPosition(Corners.BottomRight);
-        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.Destroy();
-        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.Destroy();
+        if (lvl.TryGetBlockAt(X - 1, Y, out b)) b.TryDestroy();
+        if (lvl.TryGetBlockAt(X, Y - 1, out b)) b.TryDestroy();
         });
         lvl.Reset();
         return lvl;

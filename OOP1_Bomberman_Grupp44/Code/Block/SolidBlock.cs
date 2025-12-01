@@ -14,9 +14,10 @@ class SolidBlock : IBlock
         y = Y;
     }
 
-    public void Destroy()
+    public bool TryDestroy()
     {
         // Kan inte förstöras - gör ingenting här
+        return false;
     }
 
     public void DrawAt(int cx, int cy)

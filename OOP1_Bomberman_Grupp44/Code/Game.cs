@@ -1,6 +1,8 @@
+using System.Numerics;
 using System.Reflection.Metadata;
 using Bomberman.Block;
 using Bomberman.PlayerLogic;
+using Bomberman.Powerups;
 
 namespace Bomberman;
 
@@ -8,6 +10,8 @@ class Game
 {
     private const int FPS = 10;
     private static int FrameDurationMs => 1000 / FPS;
+    private static double PowerupChance = 0.25;
+    private static Random random = new Random();
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
     public static readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
@@ -147,10 +151,13 @@ class Game
 
             // Ta bort alla block inom de sprängda positionerna
             foreach (var (x, y) in affectedblocks)
-            {
+            {   
                 if (Level.TryGetBlockAt(x, y, out IBlock? block))
                 {
-                    block.Destroy();
+                    bool destroyed = block.TryDestroy();
+                    
+                    if (destroyed)
+                        TrySpawnPowerup(x, y);
                 }
                 RedrawPosition(x, y);
             }
@@ -181,6 +188,18 @@ class Game
         });
 
         DrawExplosions();
+    }
+
+    private void TrySpawnPowerup(int x, int y)
+    {
+        if (Level.HasCollidibleBlockAt(x, y) ||
+            Level.TryGetPowerupAt(x, y, out _))
+            return;
+
+        if (random.NextDouble() < PowerupChance)
+        {
+            Level.SpawnRandomPowerup(x, y);
+        }
     }
 
     private void EnsureValidConsoleSize()

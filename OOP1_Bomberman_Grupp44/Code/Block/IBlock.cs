@@ -6,5 +6,5 @@ public interface IBlock : IDrawable
     public int Y { get; }
     bool HasCollision { get; }
 
-    public void Destroy() { }
+    bool TryDestroy();
 }
