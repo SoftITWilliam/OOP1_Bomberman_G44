@@ -10,6 +10,12 @@ class Menu
 {
     private KeyboardControlScheme controls = new KeyboardControlScheme(ControlType.MenuControls);
     
+    private readonly ConsoleColor[] PlayerColors = [
+        ConsoleColor.Blue,
+        ConsoleColor.Red,
+        ConsoleColor.Green,
+        ConsoleColor.Yellow,
+    ];
     private List<string> LevelNames = new List<string>()
     {
         "Classic level", "Star Level", "Test level"
@@ -91,137 +97,126 @@ class Menu
         Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
 
-        (int x1, int y1) = level.GetCornerPosition(Level.Corners.BottomRight);
-        (int x2, int y2) = level.GetCornerPosition(Level.Corners.TopLeft);
-        (int x3, int y3) = level.GetCornerPosition(Level.Corners.TopRight);
-        (int x4, int y4) = level.GetCornerPosition(Level.Corners.BottomLeft);
+        Player CreateHumanPlayer(Level.Corners corner, ConsoleColor color, string name, ControlType controlType)
+        {
+            (int x, int y) = level.GetCornerPosition(corner);
+
+            return new Player(x, y,
+                controls: new KeyboardControlScheme(ControlType.Arrows))
+            {
+                Name = name,
+                Color = color
+            };
+        }
+
+        Player CreateBotPlayer(Level.Corners corner, ConsoleColor color)
+        {
+            (int x, int y) = level.GetCornerPosition(corner);
+            AIControlScheme controlScheme = new AIControlScheme(level);
+        
+            Player bot = new Player(x, y, controlScheme)
+            {
+                Name = botNames.GetRandomName(),
+                Color = color
+            };
+            controlScheme.SetPlayer(bot);
+            return bot;
+        }
+
+        Console.Clear();
 
         if (index == 0) //"En spelare mot en datorspelare"
         {
-            Console.Clear();
-            string name = InputName();
-            Player p1 = new Player(x1, y1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            {
-                Name = name,
-                Color = ConsoleColor.Red
-            };
+            Console.WriteLine("Spelare 1");
+            string name1 = InputName();
 
-            AIControlScheme aics = new AIControlScheme(level);
-            Player p2 = new Player(x2, y2, aics)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Blue
-            };
-            aics.SetPlayer(p2);
+            Player player1 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[0], 
+                name: name1,
+                controlType: ControlType.Arrows);
+                
+            Player bot1 = CreateBotPlayer(
+                Level.Corners.TopLeft, PlayerColors[1]);
 
-            game.Level.AddPlayers(p1, p2);
+            game.Level.AddPlayers(player1, bot1);
             return game;
         }
         else if (index == 1) //"En spelare mot tre datorspelare"
         {
-            Console.Clear();
-            string name = InputName();
-            Player p1 = new Player(x1, y1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            {
-                Name = name,
-                Color = ConsoleColor.Red
-            };
+            Console.WriteLine("Spelare 1");
+            string name1 = InputName();
 
-            AIControlScheme aics1 = new AIControlScheme(level);
-            Player p2 = new Player(x2, y2, aics1)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Blue
-            };
-            aics1.SetPlayer(p2);
+            Player player1 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[0], 
+                name: name1,
+                controlType: ControlType.Arrows);
 
-            AIControlScheme aics2 = new AIControlScheme(level);
-            Player p3 = new Player(x3, y3, aics2)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Green
-            };
-            aics2.SetPlayer(p3);
+            Player bot1 = CreateBotPlayer(
+                Level.Corners.TopLeft, PlayerColors[1]);
+                
+            Player bot2 = CreateBotPlayer(
+                Level.Corners.TopRight, PlayerColors[2]);
 
-            AIControlScheme aics3 = new AIControlScheme(level);
-            Player p4 = new Player(x4, y4, aics3)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Yellow
-            };
-            aics3.SetPlayer(p4);
+            Player bot3 = CreateBotPlayer(
+                Level.Corners.BottomLeft, PlayerColors[3]);
 
-            game.Level.AddPlayers(p1, p2, p3, p4);
-            return game;
+            game.Level.AddPlayers(player1, bot1, bot2, bot3);
         }
         else if(index == 2) // "Två spelare mot två datorspelare"
         {
-            Console.Clear();
             Console.WriteLine("Spelare 1");
             string name1 = InputName();
-            Player p1 = new Player(x1, y1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            {
-                Name = name1,
-                Color = ConsoleColor.Red
-            };
+
+            Player player1 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[0], 
+                name: name1,
+                controlType: ControlType.Arrows);
 
             Console.Clear();
             Console.WriteLine("Spelare 2");
             string name2 = InputName();
-            Player p2 = new(x2, y2,
-            controls: new KeyboardControlScheme(ControlType.Wasd))
-            {
-                Name = name2,
-                Color = ConsoleColor.Blue
-            };
+            
+            Player player2 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[1], 
+                name: name2,
+                controlType: ControlType.Arrows);
 
-            AIControlScheme aics1 = new AIControlScheme(level);
-            Player p3 = new Player(x3, y3, aics1)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Green,
-            };
-            aics1.SetPlayer(p3);
-
-            AIControlScheme aics2 = new AIControlScheme(level);
-            Player p4 = new Player(x4, y4, aics2)
-            {
-                Name = botNames.GetRandomName(),
-                Color = ConsoleColor.Yellow,
-            };
-            aics2.SetPlayer(p4);
-
-            game.Level.AddPlayers(p1, p2, p3, p4);
-            return game;
+            Player bot1 = CreateBotPlayer(
+                Level.Corners.TopRight, PlayerColors[2]);
+                
+            Player bot2 = CreateBotPlayer(
+                Level.Corners.BottomLeft, PlayerColors[3]);
+                
+            game.Level.AddPlayers(player1, player2, bot1, bot2);
         }
         else //"Två spelare utan datorn"
         {
-            Console.Clear();
             Console.WriteLine("Spelare 1");
             string name1 = InputName();
-            Player p1 = new Player(x1, y1,
-            controls: new KeyboardControlScheme(ControlType.Arrows))
-            {
-                Name = name1,
-                Color = ConsoleColor.Red
-            };
+
+            Player player1 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[0], 
+                name: name1,
+                controlType: ControlType.Arrows);
 
             Console.Clear();
             Console.WriteLine("Spelare 2");
             string name2 = InputName();
-            Player p2 = new(x2, y2,
-            controls: new KeyboardControlScheme(ControlType.Wasd))
-            {
-                Name = name2,
-                Color = ConsoleColor.Blue
-            };
+            
+            Player player2 = CreateHumanPlayer(
+                corner: Level.Corners.BottomRight, 
+                color: PlayerColors[1], 
+                name: name2,
+                controlType: ControlType.Arrows);
 
-            game.Level.AddPlayers(p1, p2);
-            return game;
+            game.Level.AddPlayers(player1, player2);
         }
+        return game;
     }
 
     public (Game? game, bool continuePlaying) GameOverMenu(Player winner, Game game)
