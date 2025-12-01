@@ -8,7 +8,8 @@ namespace Bomberman;
 
 class Menu
 {
-    private KeyboardControlScheme controls = new KeyboardControlScheme(ControlType.MenuControls);
+    private readonly KeyboardControlScheme controls = 
+        new(ControlType.MenuControls);
     
     private readonly ConsoleColor[] PlayerColors = [
         ConsoleColor.Blue,
@@ -97,7 +98,11 @@ class Menu
         Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
 
-        Player CreateHumanPlayer(Level.Corners corner, ConsoleColor color, string name, ControlType controlType)
+        Player CreateHumanPlayer(
+            Level.Corners corner, 
+            ConsoleColor color, 
+            string name, 
+            ControlType controlType)
         {
             (int x, int y) = level.GetCornerPosition(corner);
 
@@ -109,7 +114,9 @@ class Menu
             };
         }
 
-        Player CreateBotPlayer(Level.Corners corner, ConsoleColor color)
+        Player CreateBotPlayer(
+            Level.Corners corner, 
+            ConsoleColor color)
         {
             (int x, int y) = level.GetCornerPosition(corner);
             AIControlScheme controlScheme = new AIControlScheme(level);

@@ -14,7 +14,8 @@ class Game
     private static Random random = new Random();
 
     // Definierar hur många tecken marginal som ska finnas på varje sida av spelet
-    public static readonly (int Top, int Bottom, int Left, int Right) LevelMargin =
+    public static readonly (int Top, int Bottom, int Left, int Right) 
+        LevelMargin =
     (
         Top: 7,
         Bottom: 1,
@@ -27,10 +28,14 @@ class Game
     public const int BlockCharHeight = 3;
 
     private int MinConsoleWidth =>
-        (Level.Width * BlockCharWidth) + LevelMargin.Left + LevelMargin.Right;
+        (Level.Width * BlockCharWidth) 
+        + LevelMargin.Left 
+        + LevelMargin.Right;
 
     private int MinConsoleHeight =>
-        (Level.Height * BlockCharHeight) + LevelMargin.Top + LevelMargin.Bottom;
+        (Level.Height * BlockCharHeight) 
+        + LevelMargin.Top 
+        + LevelMargin.Bottom;
 
     private bool InvalidConsoleSize() =>
         Console.WindowHeight < MinConsoleHeight ||
@@ -211,13 +216,13 @@ class Game
             Console.WriteLine("Fönstret är för litet!");
             Console.WriteLine("För att starta spelet, öka storleken");
 
-            string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}     ";
+            string txt1 = $"Bredd: {Console.WindowWidth}/{MinConsoleWidth}  ";
 
             ConsoleColor c1 = Console.WindowWidth < MinConsoleWidth
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
 
-            string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}     ";
+            string txt2 = $"Höjd: {Console.WindowHeight}/{MinConsoleHeight}  ";
 
             ConsoleColor c2 = Console.WindowHeight < MinConsoleHeight
                 ? ConsoleColor.Red

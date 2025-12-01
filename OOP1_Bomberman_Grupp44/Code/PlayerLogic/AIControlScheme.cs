@@ -74,7 +74,8 @@ class AIControlScheme : IControlScheme
         return GetRandomMove(moves);
     }
 
-    public (int dx, int dy, bool placedBomb) GetDirection(IEnumerable<string> keys)
+    public (int dx, int dy, bool placedBomb) GetDirection(
+        IEnumerable<string> keys)
     { 
         frameTick = (frameTick + 1) % 5;
         if (frameTick != 0)

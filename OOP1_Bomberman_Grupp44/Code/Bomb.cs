@@ -116,7 +116,7 @@ class Bomb : IDrawable
     
 
     // Alla "bitar" av explosionen som ritas ut
-    private Dictionary<string, string[]> kaboom = new Dictionary<string, string[]>()
+    private Dictionary<string, string[]> kaboom = new()
     {
         { "ground-zero", ["\\\\|||//", "=BOOOM=", "//|||\\\\"] },
         { "horizontal", ["^^^^^^^", "=======", "vvvvvvv"] },
@@ -131,7 +131,8 @@ class Bomb : IDrawable
     // Rita ut hela explosionen på banan -- hanterar OutOfBounds och solida block
     public void DrawExplosion(Level level)
     {
-        void DrawExplosion(int x, int y, int i, string[] branchSprite, string[] edgeSprite)
+        void DrawExplosion(int x, int y, int i, 
+            string[] branchSprite, string[] edgeSprite)
         {
             (int cx, int cy) = ConsoleUtils.GetCursorPosition(x, y);
             var sprite = i == blastRange ? edgeSprite : branchSprite;
@@ -141,7 +142,8 @@ class Bomb : IDrawable
 
         // Center
         (int cx, int cy) = ConsoleUtils.GetCursorPosition(X, Y);
-        ConsoleUtils.DrawMultiline(cx, cy, ConsoleUtils.AnsiOrange(kaboom["ground-zero"]));
+        string[] sprite = kaboom["ground-zero"];
+        ConsoleUtils.DrawMultiline(cx, cy, ConsoleUtils.AnsiOrange(sprite));
 
         // Vänster gren
         for (int i = 1; i <= blastRange; i++)

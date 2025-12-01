@@ -40,7 +40,10 @@ public class BombRainPowerup : IPowerup
             if (hasBlock || tooCloseToPlayer)
                 continue;
 
-            level.AddBomb(new Bomb(x, y, player.BlastRange, ConsoleColor.Yellow));
+
+            level.AddBomb(
+                new Bomb(x, y, player.BlastRange, ConsoleColor.Yellow));
+
             game.RedrawPosition(x, y);
             bombCount--;
         }
