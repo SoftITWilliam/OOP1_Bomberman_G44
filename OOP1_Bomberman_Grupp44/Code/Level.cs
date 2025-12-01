@@ -145,20 +145,6 @@ class Level
         return lvl;
     }
 
-    public static Level Exempel()
-    {
-        Level lvl = new Level(15, 11, (lvl) =>
-        {
-            Level classic = Level.ClassicLevel();
-            lvl.Blocks.AddRange(classic.Blocks);
-
-            lvl.Blocks.RemoveAll(block =>
-            {
-                return block.X >= 5 && block.X <= 9;
-            });
-        });
-    }
-
     private void AddBlock(IBlock block)
     {
         if (IsOutOfBounds(block.X, block.Y))
