@@ -9,10 +9,7 @@ namespace Bomberman;
 class Menu
 {
     private KeyboardControlScheme controls = new KeyboardControlScheme(ControlType.MenuControls);
-    private List<Level> LevelTypes = new List<Level>()
-    {
-        Level.ClassicLevel(), Level.StarLevel(), Level.TestLevel()
-    };
+    
     private List<string> LevelNames = new List<string>()
     {
         "Classic level", "Star Level", "Test level"
@@ -74,8 +71,14 @@ class Menu
     }
     private Game ChooseLevel()
     {
+        List<Level> LevelTypes = new List<Level>()
+        {
+            Level.ClassicLevel(), Level.StarLevel(), Level.TestLevel()
+        };
         Console.Clear();
         int index = MenuLoop("spelplan", LevelNames);
+
+
         return ChoosePlayers(LevelTypes[index]);
         
     }
@@ -218,7 +221,7 @@ class Menu
         }
     }
 
-    public void GameOverMenu(Player winner, Game game)
+    public (Game? game, bool continuePlaying) GameOverMenu(Player winner, Game game)
     {
         Console.Clear();
         Console.ForegroundColor = winner.Color;
@@ -240,27 +243,15 @@ class Menu
                 player.Reset();
             }
             game.Level.Reset();
-            game.GameLoop();
+            return (game, continuePlaying: true);
         }
         if (index == 1)
         {
-            //provade att göra såhär eftersom spelet startades om med de gamla spelarna frf med i scoreboard
-            //men nu verkar det krascha efter att man placerat ut första bomben
-            //moa hjääälp det blev inte så bra här
-            //behöver man skapa ett nytt game? just nu görs det i ChoosePlayers
-            foreach (Player player in game.Level.Players)
-            {
-                player.Reset();
-            }
-            game.Level.Reset();
-            var newGame = StartingMenu();
-            newGame.GameLoop();
+            return (null, continuePlaying: true);
         }
         else
         {
-            Console.Clear();
-            Console.WriteLine("ok hejdå");
-            Environment.Exit(0);
+            return (null, continuePlaying: false);
         }
         
     }

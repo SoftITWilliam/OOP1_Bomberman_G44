@@ -10,9 +10,23 @@ public class Program
         KeyInput.Start();
 
         Menu menu = new Menu();
-        var game = menu.StartingMenu();
+
+        Game? game = null;
+        bool continuePlaying = true;
+        do
+        {
+            if (game is null)
+                game = menu.StartingMenu();
+
+            Console.Clear();
+            var winner = game.GameLoop();
+
+            (game, continuePlaying) = menu.GameOverMenu(winner, game);
+        }
+        while (continuePlaying);
+    
         Console.Clear();
-        var winner = game.GameLoop();
-        menu.GameOverMenu(winner, game);
+        Console.WriteLine("ok hejdå");
+        Environment.Exit(0);
     }
 }
