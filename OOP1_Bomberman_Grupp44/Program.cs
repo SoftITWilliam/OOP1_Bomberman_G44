@@ -21,7 +21,7 @@ public class Program
             Console.Clear();
             var winner = game.GameLoop();
 
-            (game, continuePlaying) = menu.GameOverMenu(winner, game);
+            (game, continuePlaying) = menu.GameOverMenu(winner, game!);
         }
         while (continuePlaying);
 
