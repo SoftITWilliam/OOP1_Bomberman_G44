@@ -24,9 +24,19 @@ public class Program
             (game, continuePlaying) = menu.GameOverMenu(winner, game);
         }
         while (continuePlaying);
-    
+
+        Quit();
+    }
+
+    public static void Quit()
+    {
         Console.Clear();
         Console.WriteLine("Tack för att Ni har spelat!");
+
+        // Om vi inte stoppar KeyInput här så kommer den fortsätta köras i bakgrunden
+        // tills konsolen stängs ner (Det blir rätt laggigt när det blir 20 stycken)
+        KeyInput.Stop(); 
+
         Environment.Exit(0);
     }
 }

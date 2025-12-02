@@ -94,7 +94,7 @@ class Game
 
             // Tillfällig break condition
             if (input.Contains(ConsoleKey.Escape.ToString()))
-                Environment.Exit(0);
+                Program.Quit();
 
             Thread.Sleep(FrameDurationMs);
 
@@ -102,7 +102,6 @@ class Game
             {
                 return winner;
             }
-            
         }
     }
 
