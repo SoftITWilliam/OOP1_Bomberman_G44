@@ -35,37 +35,6 @@ class Level
         Powerups.Clear();
         reset(this);
     }
-
-    public static Level TestLevel()
-    {
-        Level lvl = new Level(9, 7, (lvl) =>
-        {
-            lvl.AddBlock(new SolidBlock(1, 1));
-            //lvl.AddBlock(new SolidBlock(1, 2));
-            //lvl.AddBlock(new SolidBlock(1, 3));
-
-            //lvl.AddBlock(new DestructibleBlock(3, 1));
-            //lvl.AddBlock(new DestructibleBlock(3, 2));
-            //lvl.AddBlock(new DestructibleBlock(3, 3));
-
-            //lvl.AddBlock(new DestructibleBlock(5, 1));
-            //lvl.AddBlock(new DestructibleBlock(5, 2));
-            //lvl.AddBlock(new DestructibleBlock(5, 3));
-
-            lvl.AddPowerup(new BombRainPowerup(0, 2));
-            lvl.AddPowerup(new RangePowerup(0, 4));
-            lvl.AddPowerup(new BombCountPowerup(2, 2));
-            lvl.AddPowerup(new HealthPowerup(2, 4));
-
-            IBlock? b;
-            if (lvl.TryGetBlockAt(5, 1, out b)) b.TryDestroy();
-            if (lvl.TryGetBlockAt(5, 2, out b)) b.TryDestroy();
-            if (lvl.TryGetBlockAt(5, 3, out b)) b.TryDestroy();
-        });
-
-        lvl.Reset();
-        return lvl;
-    }
     public static Level ClassicLevel()
     {
         Level lvl = new Level(15, 11, (lvl) =>
@@ -110,7 +79,7 @@ class Level
         lvl.Reset();
         return lvl;
     }
-    public static Level KingOfTheHill()
+    public static Level KingOfTheHillLevel()
     {
         Level lvl = new Level(15, 11, (lvl) =>
         {
@@ -204,7 +173,6 @@ class Level
                 (12,0), (12,3), (12,7), (12,10), (13,4), (13,6), (14,2),
                 (14,8),
             };
-            //POWERUPS
             foreach (var (x, y) in SolidBlockPositions)
                 lvl.AddBlock(new SolidBlock(x, y));
             foreach (var (x, y) in DestrucBlockPositions)
