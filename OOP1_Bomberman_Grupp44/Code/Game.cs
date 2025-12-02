@@ -114,7 +114,7 @@ class Game
 
     private void UpdatePlayers(List<string> input)
     {
-        foreach (Player player in Level.Players)
+        foreach (Player player in Level.Players.Where(player => player.IsAlive))
         {
             // Spara spelarens position innan och efter inputhanteringen.
             (int x1, int y1) = (player.X, player.Y);
