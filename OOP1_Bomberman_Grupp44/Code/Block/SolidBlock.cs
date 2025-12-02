@@ -3,7 +3,7 @@ namespace Bomberman.Block;
 class SolidBlock : IBlock
 {
     private readonly int x, y;
-    public int X => x; //? ska den ha en setter?
+    public int X => x;
     public int Y  => y;
 
     public bool HasCollision => true; // Har alltid kollision
