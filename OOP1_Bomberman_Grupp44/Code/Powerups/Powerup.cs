@@ -3,16 +3,23 @@ using Bomberman.PlayerLogic;
 
 namespace Bomberman.Powerups;
 
-interface IPowerup : IDrawable
+/*
+    1. KRAV 7: Subtypspolymorfism #2
+    2. 
+    3.
+*/
+
+abstract class Powerup : IDrawable
 {
-    int X { get; }
-    int Y { get; }
-    bool HasBeenUsed { get; }
+    public int X { get; protected set; }
+    public int Y { get; protected set; }
+    public bool HasBeenUsed { get; protected set; }
 
     // Powerup behöver se nästan allt i spelet för att kunna göra saker
-    void Use(Player player, Level level, Game game);
+    public abstract void Use(Player player, Level level, Game game);
+    public abstract void DrawAt(int cx, int cy);
 
-    void DrawBubble(int cx, int cy)
+    protected void DrawBubble(int cx, int cy)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.SetCursorPosition(cx, cy);
@@ -22,4 +29,5 @@ interface IPowerup : IDrawable
             "▚     ▞");
         Console.ForegroundColor = ConsoleColor.White;
     }
+
 }

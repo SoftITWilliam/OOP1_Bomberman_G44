@@ -2,21 +2,17 @@ using Bomberman.PlayerLogic;
 
 namespace Bomberman.Powerups;
 
-public class BombRainPowerup : IPowerup
+class BombRainPowerup : Powerup
 {
     private const int MinBombCount = 5;
     private const int MaxBombCount = 10;
-
-    public int X { get; }
-    public int Y { get; }
-    public bool HasBeenUsed { get; private set; }
 
     public BombRainPowerup(int x, int y)
     {
         (X, Y) = (x, y);
     }
 
-    void IPowerup.Use(Player player, Level level, Game game)
+    public override void Use(Player player, Level level, Game game)
     {
         HasBeenUsed = true;
 
@@ -49,9 +45,9 @@ public class BombRainPowerup : IPowerup
         }
     }
 
-    public void DrawAt(int cx, int cy)
+    public override void DrawAt(int cx, int cy)
     {
-        (this as IPowerup).DrawBubble(cx, cy);   
+        DrawBubble(cx, cy);   
 
         Console.SetCursorPosition(cx + 1, cy);
         ConsoleUtils.WriteWithColor("▟███▙", ConsoleColor.DarkGray);

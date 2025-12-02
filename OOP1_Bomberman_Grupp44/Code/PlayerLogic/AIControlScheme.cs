@@ -72,12 +72,12 @@ class AIControlScheme : IControlScheme
     }
 
     // Hämta alla powerups som ligger bredvid botten
-    private List<IPowerup> GetAdjacentPowerups()
+    private List<Powerup> GetAdjacentPowerups()
     {
-        List<IPowerup> powerups = [];
+        List<Powerup> powerups = [];
         foreach ((int px, int py) in GetAdjacentPositions(player.X, player.Y))
         {
-            if (level.TryGetPowerupAt(px, py, out IPowerup? p)) 
+            if (level.TryGetPowerupAt(px, py, out Powerup? p)) 
                 powerups.Add(p);  
         }
         return powerups;

@@ -19,7 +19,7 @@ class Level
     public List<Player> Players = new List<Player>();
     private List<IBlock> Blocks { get; } = new List<IBlock>();
     public List<Bomb> Bombs { get; } = new List<Bomb>();
-    public List<IPowerup> Powerups { get; } = new List<IPowerup>();
+    public List<Powerup> Powerups { get; } = new List<Powerup>();
     private Action<Level> reset;
 
     private Level(int width, int height, Action<Level> reset)
@@ -213,7 +213,7 @@ class Level
             AddPlayer(player);
     }
 
-    public void AddPowerup(IPowerup powerup)
+    public void AddPowerup(Powerup powerup)
     {
         if (IsOutOfBounds(powerup.X, powerup.Y))
         {
@@ -227,7 +227,7 @@ class Level
         Random rand = new Random();
 
         // Välj slumpmässig powerup typ
-        IPowerup powerup = rand.Next(0, 4) switch
+        Powerup powerup = rand.Next(0, 4) switch
         {
             0 => new HealthPowerup(x, y),
             1 => new RangePowerup(x, y),
@@ -272,7 +272,7 @@ class Level
     }
 
     public bool TryGetPowerupAt(int x, int y,
-        [NotNullWhen(true)] out IPowerup? powerup)
+        [NotNullWhen(true)] out Powerup? powerup)
     {
         powerup = Powerups.Find(p => p.X == x && p.Y == y);
         return powerup != null;

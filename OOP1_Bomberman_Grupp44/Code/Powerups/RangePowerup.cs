@@ -2,26 +2,22 @@ using Bomberman.PlayerLogic;
 
 namespace Bomberman.Powerups;
 
-public class RangePowerup : IPowerup
+class RangePowerup : Powerup
 {
-    public int X { get; }
-    public int Y { get; }
-    public bool HasBeenUsed { get; private set; }
-
     public RangePowerup(int x, int y)
     {
         (X, Y) = (x, y);
     }
 
-    void IPowerup.Use(Player player, Level level, Game game)
+    public override void Use(Player player, Level level, Game game)
     {
         HasBeenUsed = true;
         player.UpgradeBombs();
     }
 
-    public void DrawAt(int cx, int cy)
+    public override void DrawAt(int cx, int cy)
     {
-        (this as IPowerup).DrawBubble(cx, cy);
+        DrawBubble(cx, cy);
 
         
         //ConsoleUtils.WriteWithColor("+1", ConsoleColor.Green);
