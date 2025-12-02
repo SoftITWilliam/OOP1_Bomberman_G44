@@ -94,10 +94,6 @@ class Game
 
             Level.Powerups.RemoveAll(powerup => powerup.HasBeenUsed);
 
-            // Tillfällig break condition
-            if (input.Contains(ConsoleKey.Escape.ToString()))
-                Program.Quit();
-
             Thread.Sleep(FrameDurationMs);
 
             if (TryGetWinner(out Player? winner))
