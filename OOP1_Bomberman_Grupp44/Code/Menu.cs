@@ -8,7 +8,8 @@ namespace Bomberman;
 
 class Menu
 {
-    private KeyboardControlScheme controls = new KeyboardControlScheme(ControlType.MenuControls);
+    private KeyboardControlScheme controls
+    = new KeyboardControlScheme(ControlType.MenuControls);
     
     private readonly ConsoleColor[] PlayerColors = [
         ConsoleColor.Blue,
@@ -27,7 +28,7 @@ class Menu
     private List<string> PlayerOptions = new List<string>()
     {
         "En spelare mot en datorspelare", "En spelare mot tre datorspelare", 
-        "Två spelare mot två datorspelare", "Två spelare utan datorspelare" //kalla det något annat än datorn?
+        "Två spelare mot två datorspelare", "Två spelare utan datorspelare"
     };
     private List<string> EndOptions = new List<string>()
     {
@@ -50,7 +51,7 @@ class Menu
         Console.WriteLine("Målet är att vinna.");
         Console.WriteLine("Spräng dina motståndare, sista levande spelare vinner.\n");
         Console.WriteLine("För att komma åt fienden behöver du spränga dig fram,");
-        Console.WriteLine("de sprängbara blocken ser ut såhär:\n\n"); //visa solida också
+        Console.WriteLine("de sprängbara blocken ser ut såhär:\n\n");
         destructible.DrawAt(11, 6);
         Console.WriteLine("\n");
         Console.WriteLine("...men de här kan du inte spränga:");
@@ -58,10 +59,10 @@ class Menu
         Console.WriteLine("\n\nDet finns också powerups som kan hjälpa dig,");
         Console.WriteLine("plocka upp dem och se vad som händer ;)\n\n");
         Console.WriteLine("Bomber sprängs efter 3 sekunder. Kom ihåg att akta dig!\n\n");
-        Console.ForegroundColor = ConsoleColor.Red;
+        Console.ForegroundColor = PlayerColors[0];
         Console.Write("Spelare 1"); Console.ResetColor();
         Console.Write(" styr med pilarna och placerar bomber med punkt.\n");
-        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.ForegroundColor = PlayerColors[1];
         Console.Write("Spelare 2"); Console.ResetColor();
         Console.Write(" styr med WASD och placerar bomber med mellanslag.\n\n");
 
@@ -98,7 +99,8 @@ class Menu
         Console.Clear();
         int index = MenuLoop("antal spelare", PlayerOptions);
 
-        Player CreateHumanPlayer(Level.Corners corner, ConsoleColor color, string name, ControlType controlType)
+        Player CreateHumanPlayer(Level.Corners corner, ConsoleColor color,
+        string name, ControlType controlType)
         {
             (int x, int y) = level.GetCornerPosition(corner);
 
@@ -283,7 +285,8 @@ class Menu
 
             selectedIndex += dy;
             if (selectedIndex >= optionsList.Count) selectedIndex = 0;
-            if (selectedIndex < 0) selectedIndex = optionsList.Count - 1; //wrap around
+            //wrap around:
+            if (selectedIndex < 0) selectedIndex = optionsList.Count - 1;
 
             enter = pressedEnter;
         } while (!enter);
