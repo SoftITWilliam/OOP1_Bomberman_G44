@@ -8,25 +8,44 @@ class Bomb : IDrawable
     private const int MsRemaining = 3000;
     private const int MsExplosionTime = 1000;
     private readonly Player? bombOwner;
+
+    /*
+        1. KRAV 1: Inkapsling / Informationsgömning
+        
+        2. Vi inkapslar bombens sprängningsfunktionalitet genom att ha fältet placedTime som privat, 
+        vilket sedan sätts till DateTime.Now i bombens konstruktor. Bomben själv har ansvaret för att hålla koll
+        på när den ska sprängas, vilket är efter att 3 sekunder har passerat (se MsRemaining). 
+        
+        3. Den publika metoden Update() körs regelbundet från gameloopen, och returnerar true när tiden har passerat,
+        på så sätt får resten av koden reda på att en explosion har skett utan att exponera logiken bakom det. Resten
+        av koden vet alltså att bomben kan sprängas, men behöver inte veta hur. Vidare garanterar vi logiska tillstånd
+        eftersom denna inkapsling av placedTime inte låter någon kod utanför klassen påverka när eller hur en bomb sprängs.
+        Genom att dölja logiken för när bomber sprängs möjliggör vi också för framtida ändringar av implementationen,
+        utan att användare behöver påverkas, och våran kod blir alltså mer flexibel.  
+    */
     private readonly DateTime placedTime;
-    private DateTime TimeOfExplosion { get; set; } //byt namn på variabeln?
+    private DateTime explosionTime { get; set; }
     public bool HasExploded { get; private set; }
-    public bool DoneExploding { get
+    public bool DoneExploding 
+    { 
+        get
         {
             if (!HasExploded) return false;
-            var elapsedMs = (DateTime.Now - TimeOfExplosion).TotalMilliseconds;
+            var elapsedMs = (DateTime.Now - explosionTime).TotalMilliseconds;
             return elapsedMs >= MsExplosionTime;
-        }}
+        }
+    }
     public int X { get; }
     public int Y { get; }
 
     /*
     1. KRAV 2: Overloading av konstruktorer
-    2. Vi har två konstruktorer för bomber, där den ena tar emot en spelare och sparar ner denne som bombens ägare,
+
+    2. Vi har två konstruktorer för bomber, där den ena tar emot en spelare, sparar ner denne som bombens ägare 
     och använder sig av dennes X- och Y-position, och den andra tar istället emot positionen manuellt.
-    3. Detta använder vi oss av för att BombRainPowerup ska kunna skapa bomber som inte har en ägare. Denna användning
-    av overloading förenklar koden eftersom man kommer runt kravet på att ha en ägare till bomben, utan 
-    att behöva skapa en subtyp till bomb. 
+
+    3. Detta använder vi oss av för att BombRainPowerup ska kunna skapa bomber som inte har en ägare. Denna användning av overloading 
+    förenklar koden eftersom man kommer runt kravet på att ha en ägare till bomben, utan att behöva skapa en subtyp till bomb. 
     */
 
     //konstruktor för bomb beroende av spelare:
@@ -68,7 +87,7 @@ class Bomb : IDrawable
     private void Explode()
     {
         HasExploded = true;
-        TimeOfExplosion = DateTime.Now;
+        explosionTime = DateTime.Now;
         bombOwner?.AddAvailableBomb();
     }
 

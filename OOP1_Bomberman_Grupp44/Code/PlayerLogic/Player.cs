@@ -13,12 +13,14 @@ class Player : IDrawable
 
     /*
     1. KRAV 3: Computed properties
-    2. Våran bool IsAlive räknar ut huruvida spelaren lever baserat på dennes HP. Den returnerar true
+    
+    2. Vår bool IsAlive räknar ut huruvida spelaren lever baserat på dennes HP. Den returnerar true
     så länge HP är större än 0. 
-    3. Vi använder en beräknad egenskap för att garantera ett logiskt tillstånd, eftersom vi inte vill att
+
+    3. Vi använder en computed property för att garantera ett logiskt tillstånd, eftersom vi inte vill att
     IsAlive ska kunna vara true om HP är 0, eller tvärtom. Dessutom blir koden mer begriplig av att ha både
-    IsAlive och HP som egenskaper, eftersom det är tydligare att utanför klassen kontrollera bool:en istället
-    för värdet på HP.
+    IsAlive och HP som egenskaper, eftersom det är tydligare att utanför klassen läsa av boolen istället
+    för att läsa av värdet på HP.
     */
 
     public bool IsAlive => HP > 0;
@@ -26,17 +28,20 @@ class Player : IDrawable
     public int AvailableBombs = 1;
 
     private readonly IControlScheme controls;
-   
+    
     /*
     1. KRAV 5: Beroendeinjektion
-    2. I konstruktorn för player injicerar vi ett kontrollschema IControlScheme som avgör hur spelaren
-    styrs. I HandleInput() anropas metoden GetDirection() på det injicerade kontrollschemat, vilket
-    kontrollerar spelarens handlingar. Beroende på vilket kontrollschema vi väljer kan detta styras
-    med tangentbordet eller automatiskt.
+
+    2. I konstruktorn för player injicerar vi ett kontrollschema som är en subtyp till IControlScheme
+    som avgör hur spelaren styrs. I HandleInput() anropas metoden GetDirection() på det injicerade kontrollschemat,
+    vilket kontrollerar spelarens handlingar. Beroende på vilket kontrollschema vi väljer kan styrningen ske
+    antingen med tangentbordet eller automatiskt.
+
     3. Användningen av injektion här tillåter oss att skilja åt mänskliga- och botspelare, utan att
-    skapa subtyper beroende på hur spelaren styrs. Detta gör också koden mer flexibel eftersom vi
-    möjliggör för att i framtiden kunna lägga till ytterligare kontrollscheman utan att behöva ändra
-    i Player-koden.
+    skapa subtyper beroende på hur spelaren styrs, och detta är en lämplig lösning eftersom styrningen är det enda
+    som skiljer botspelare och mänskliga spelare åt. I annat fall hade vi behövt ha två nästintill identiska klasser
+    för att uppfylla samma syfte. Beroendeinjektionen gör också koden mer flexibel eftersom vi möjliggör för att i
+    framtiden kunna lägga till ytterligare kontrollscheman utan att behöva ändra i Player-koden.
     */
 
     public Player(int startX, int startY, IControlScheme controls)

@@ -45,12 +45,14 @@ class Game
 
     /*
     1. KRAV 4: Objektkomposition
-    2. Game har en egenskap av typen Level som håller koll på alla objekt (block, spelare, bomber, powerups)
+    
+    2. Game har en property av typen Level som håller koll på alla objekt (dvs block, spelare, bomber och powerups)
     som ligger på spelplanen. 
+
     3. Detta gör vi för att förenkla Game-klassen, då Level har informationen om alla objekt på spelplanen,
-    men game är å andra sidan ansvarig för gameloopen, att rita ut banan och hantera interaktionen mellan
+    men Game är å andra sidan ansvarig för gameloopen, att rita ut banan och att hantera interaktionen mellan
     de olika objekten. Genom att ha Level som en separat klass minskar vi alltså Game-klassens ansvar
-    eftersom den inte behöver instansiera banan själv, och vi tillåts återställa banan separat från game.
+    eftersom den inte behöver instansiera banan själv, och vi tillåts återställa banan separat från Game.
     */
 
     public Level Level { get; private set; }
