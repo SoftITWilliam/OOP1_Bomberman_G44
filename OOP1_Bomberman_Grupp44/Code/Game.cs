@@ -60,7 +60,7 @@ class Game
         this.Level = level;
     }
 
-    public Player GameLoop()
+    public Player? GameLoop()
     {
         Console.Clear();
 
@@ -98,15 +98,16 @@ class Game
 
             Thread.Sleep(FrameDurationMs);
 
-            if (GetWinner() is Player winner)
+            if (TryGetWinner(out Player? winner))
             {
-                return winner;
+                return winner; // Null om spelet är oavgjort
             }
         }
     }
 
-    private Player? GetWinner()
+    private bool TryGetWinner(out Player? winner)
     {
+        winner = null;
         int aliveCount = 0;
         Player? lastAlive = null;
         foreach (Player player in Level.Players)
@@ -117,8 +118,13 @@ class Game
                 lastAlive = player;
             }
         }
-        if (aliveCount == 1 && lastAlive != null) return lastAlive;
-        else return null;
+        if (aliveCount == 1 && lastAlive != null)
+        {
+            winner = lastAlive;
+            return true;
+        }
+        else if (aliveCount == 0) return true; // Oavgjort - returnera true men lämna winner som null
+        else return false;
     }
 
     private void UpdatePlayers(List<string> input)

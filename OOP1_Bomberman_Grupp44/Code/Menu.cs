@@ -230,7 +230,7 @@ class Menu
     public (Game? game, bool continuePlaying) GameOverMenu(Player winner, Game game)
     {
         Console.Clear();
-        Console.ForegroundColor = winner.Color;
+        Console.ForegroundColor = winner?.Color ?? ConsoleColor.DarkGray;
         ConsoleUtils.DrawMultiline(30, 0,
         " ______     __         __  __     ______  ",
         "/\\  ___\\   /\\ \\       /\\ \\/\\ \\   /\\__  _\\ ",
@@ -239,7 +239,16 @@ class Menu
         "  \\/_____/   \\/_____/   \\/_____/     \\/_/ "
         );
         Console.SetCursorPosition(45, 6);
-        Console.WriteLine($"{winner.Name} vinner!");
+
+        if (winner is null)
+        {
+            Console.WriteLine($"Oavgjort!");
+        }
+        else
+        {
+            Console.WriteLine($"{winner.Name} vinner!");
+        }
+       
         Console.ResetColor();
         int index = MenuLoop("alternativ", EndOptions);
         if (index == 0)
