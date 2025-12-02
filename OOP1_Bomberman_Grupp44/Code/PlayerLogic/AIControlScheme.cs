@@ -1,4 +1,5 @@
 using Bomberman.Block;
+using Bomberman.Powerups;
 
 namespace Bomberman.PlayerLogic;
 
@@ -74,6 +75,17 @@ class AIControlScheme : IControlScheme
         }
         return players;
     }
+
+    private List<IPowerup> GetAdjacentPowerups()
+    {
+        List<IPowerup> powerups = [];
+        foreach ((int px, int py) in GetAdjacentPositions(player.X, player.Y))
+        {
+            if (level.TryGetPowerupAt(px, py, out IPowerup? p)) 
+                powerups.Add(p);  
+        }
+        return powerups;
+    }
     
     // Hämta alla giltiga förflyttningar från spelarens nuvarande position
     private List<Move> GetLegalMoves()
@@ -120,6 +132,16 @@ class AIControlScheme : IControlScheme
         moves.RemoveAll(move => 
             move.NewX == lastPos.x && move.NewY == lastPos.y);
 
+        // Om botten står bredvid en powerup så *måste* botten gå till den
+        // (jag orkar inte göra riktig pathfinding)
+        var adjacentPowerups = GetAdjacentPowerups();
+        if (adjacentPowerups.Count > 0)
+        {
+            moves.RemoveAll(move => 
+                level.TryGetPowerupAt(move.NewX, move.NewY, out _) == false);
+        }
+
+        // Efter vi filtrerat bort "ej optimala" moves, så väljer vi en slumpmässig.
         var move = GetRandomMove(moves);
 
         // Antal sprängbara block bredvid botten
