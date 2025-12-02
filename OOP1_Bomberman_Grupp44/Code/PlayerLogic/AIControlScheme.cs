@@ -23,6 +23,7 @@ class AIControlScheme : IControlScheme
     public void SetPlayer(Player player) =>
         this.player = player;
 
+    // Hämta bottens senaste position
     private (int x, int y) GetPreviousPosition()
     {
         var last = recentMoves.LastOrDefault(new Move(player, 0, 0));
@@ -46,14 +47,11 @@ class AIControlScheme : IControlScheme
             .ToList();
     }
 
-    private List<(int x, int y)> GetAdjacentPositions() =>
-        GetAdjacentPositions(player.X, player.Y);
-
-    // Hämta alla block som ligger bredvid den givna positionen
-    private List<IBlock> GetAdjacentBlocks(int x, int y)
+    // Hämta alla block som ligger bredvid botten 
+    private List<IBlock> GetAdjacentBlocks()
     {
         List<IBlock> blocks = [];
-        foreach ((int px, int py) in GetAdjacentPositions(x, y))
+        foreach ((int px, int py) in GetAdjacentPositions(player.X, player.Y))
         {
             if (level.TryGetBlockAt(px, py, out IBlock? b)) 
                 blocks.Add(b);  
@@ -61,10 +59,7 @@ class AIControlScheme : IControlScheme
         return blocks;
     }
 
-    // Hämta alla block som ligger bredvid spelaren 
-    private List<IBlock> GetAdjacentBlocks() =>
-        GetAdjacentBlocks(player.X, player.Y);
-
+    // Hämta alla andra spelare som ligger bredvid botten
     private List<Player> GetAdjacentPlayers()
     {
         List<Player> players = [];
@@ -76,6 +71,7 @@ class AIControlScheme : IControlScheme
         return players;
     }
 
+    // Hämta alla powerups som ligger bredvid botten
     private List<IPowerup> GetAdjacentPowerups()
     {
         List<IPowerup> powerups = [];
@@ -106,13 +102,6 @@ class AIControlScheme : IControlScheme
     {
         int i = random.Next(0, moves.Count);
         return moves[i];
-    }
-
-    private void WriteMoves(IEnumerable<Move> moves)  
-    {
-        Console.Write($"Count: {moves.Count()} | ");
-        var strings = moves.Select(move => $"{move.Dx}, {move.Dy}");
-        Console.Write(string.Join(" ; ", strings) + "                              ");
     }
 
     // Tar emot alla moves som är möjliga, och returnerar ett "smart" move.
