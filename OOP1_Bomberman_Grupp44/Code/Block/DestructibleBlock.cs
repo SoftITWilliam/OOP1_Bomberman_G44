@@ -10,10 +10,8 @@ class DestructibleBlock : IBlock
         x = X;
         y = Y;
     }
-
     private bool isDestroyed = false;
     public bool HasCollision => isDestroyed == false;
-
     public bool TryDestroy()
     {
         if (isDestroyed) return false;
@@ -21,7 +19,6 @@ class DestructibleBlock : IBlock
         isDestroyed = true;
         return true;
     }
-
     public void DrawAt(int cx, int cy)
     {
         if (isDestroyed)

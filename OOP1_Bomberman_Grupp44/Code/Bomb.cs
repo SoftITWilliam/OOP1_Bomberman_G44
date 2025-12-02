@@ -73,7 +73,8 @@ class Bomb : IDrawable
     }
 
     // Returnerar alla koordinater som påverkas av explosionen.
-    // Hanterar automatiskt koordinater som går utanför banan eller som blockeras av solida block
+    // Hanterar automatiskt koordinater som går utanför banan
+    // eller som blockeras av solida block
     public List<(int x, int y)> GetAffectedTiles(Level level)
     {
         List<(int x, int y)> InRange = new List<(int x, int Y)>();
