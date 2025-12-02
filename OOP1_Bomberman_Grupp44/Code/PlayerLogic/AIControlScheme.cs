@@ -104,6 +104,9 @@ class AIControlScheme : IControlScheme
     // Returnerar en slumpmässig move från listan
     private Move GetRandomMove(List<Move> moves)
     {
+        if (moves.Count == 0) 
+            return new Move(player, 0, 0);
+            
         int i = random.Next(0, moves.Count);
         return moves[i];
     }
