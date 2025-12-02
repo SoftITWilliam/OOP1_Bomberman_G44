@@ -26,7 +26,7 @@ public class Program
         while (continuePlaying);
     
         Console.Clear();
-        Console.WriteLine("ok hejdå");
+        Console.WriteLine("Tack för att Ni har spelat!");
         Environment.Exit(0);
     }
 }
