@@ -14,8 +14,12 @@ class AIControlScheme : IControlScheme
     private Queue<Move> recentMoves = new Queue<Move>();
     private const int queueLength = 3;
 
-    
+// Detta är lungt - vi kör alltid SetPlayer efter vi har initialiserat denna. 
+// Vi kan inte skicka in player i konstruktorn, eftersom den här klassen skickas in i players konstruktor!
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public AIControlScheme(Level level)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         this.level = level;
     }
