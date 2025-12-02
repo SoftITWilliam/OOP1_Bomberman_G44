@@ -18,8 +18,8 @@ class BombRainPowerup : Powerup
 
         Random rand = new Random();
         int bombCount = rand.Next(MinBombCount, MaxBombCount + 1);
-        int iterations = 0; // Extra break-villkor så att vi inte kan fastna i all oändlighet
-
+        // Extra break-villkor så att vi inte kan fastna i all oändlighet:
+        int iterations = 0; 
         while (bombCount > 0 && iterations < 1000)
         {
             iterations++;
@@ -35,7 +35,6 @@ class BombRainPowerup : Powerup
 
             if (hasBlock || tooCloseToPlayer)
                 continue;
-
 
             level.AddBomb(
                 new Bomb(x, y, player.BlastRange, ConsoleColor.Yellow));

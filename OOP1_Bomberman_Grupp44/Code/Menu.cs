@@ -57,6 +57,7 @@ class Menu
         Console.WriteLine("...men de här kan du inte spränga:");
         solid.DrawAt(11, 12); Console.ResetColor();
         Console.WriteLine("\n\nDet finns också powerups som kan hjälpa dig,");
+        Console.WriteLine("de kan dyka upp när du spränger block,");
         Console.WriteLine("plocka upp dem och se vad som händer ;)\n\n");
         Console.WriteLine("Bomber sprängs efter 3 sekunder. Kom ihåg att akta dig!\n\n");
         Console.ForegroundColor = PlayerColors[0];
@@ -85,8 +86,6 @@ class Menu
         };
         Console.Clear();
         int index = MenuLoop("spelplan", LevelNames);
-
-
         return ChoosePlayers(LevelTypes[index]);
         
     }
@@ -268,15 +267,12 @@ class Menu
         {
             return (null, continuePlaying: false);
         }
-        
     }
     
     private int MenuLoop(string type, List<string> optionsList)
     {
         int selectedIndex = 0;
-
         bool enter = false;
-        
         do
         {
             Console.SetCursorPosition(0, 0);
