@@ -1,3 +1,5 @@
+using Bomberman.Block;
+
 namespace Bomberman.PlayerLogic;
 
 class AIControlScheme : IControlScheme
@@ -11,15 +13,9 @@ class AIControlScheme : IControlScheme
     private Queue<Move> recentMoves = new Queue<Move>();
     private const int queueLength = 3;
 
+    
     public AIControlScheme(Level level)
     {
-        // Todo make bro smart
-
-        // - Weighted förflyttning: prioritera senaste riktningen.
-        // - I vanliga fall, kan den inte gå riktningen den kom från. Tänk snake. (Undantag dead-ends och bomber)
-        // - Vid egen bomb placering: backtracka senaste förflyttningarna
-        // - Undvik rutor som är på väg att sprängas
-
         this.level = level;
     }
 
@@ -31,7 +27,55 @@ class AIControlScheme : IControlScheme
         var last = recentMoves.LastOrDefault(new Move(player, 0, 0));
         return (player.X - last.Dx, player.Y - last.Dy);
     }
+
+    // Hämta alla positioner bredvid den givna positionen, 
+    // som inte ligger utanför banan.
+    private List<(int x, int y)> GetAdjacentPositions(int x, int y)
+    {
+        List<(int x, int y)> positions =
+        [
+            (x + 1, y),
+            (x - 1, y),
+            (x, y + 1),
+            (x, y - 1),
+        ];
+
+        return positions
+            .Where((pos) => !level.IsOutOfBounds(pos.x, pos.y))
+            .ToList();
+    }
+
+    private List<(int x, int y)> GetAdjacentPositions() =>
+        GetAdjacentPositions(player.X, player.Y);
+
+    // Hämta alla block som ligger bredvid den givna positionen
+    private List<IBlock> GetAdjacentBlocks(int x, int y)
+    {
+        List<IBlock> blocks = [];
+        foreach ((int px, int py) in GetAdjacentPositions(x, y))
+        {
+            if (level.TryGetBlockAt(px, py, out IBlock? b)) 
+                blocks.Add(b);  
+        }
+        return blocks;
+    }
+
+    // Hämta alla block som ligger bredvid spelaren 
+    private List<IBlock> GetAdjacentBlocks() =>
+        GetAdjacentBlocks(player.X, player.Y);
+
+    private List<Player> GetAdjacentPlayers()
+    {
+        List<Player> players = [];
+        foreach ((int px, int py) in GetAdjacentPositions(player.X, player.Y))
+        {
+            if (level.TryGetPlayerAt(px, py, out Player? p)) 
+                players.Add(p);  
+        }
+        return players;
+    }
     
+    // Hämta alla giltiga förflyttningar från spelarens nuvarande position
     private List<Move> GetLegalMoves()
     {
         return new List<Move>()
@@ -45,6 +89,7 @@ class AIControlScheme : IControlScheme
         .ToList();
     }
 
+    // Returnerar en slumpmässig move från listan
     private Move GetRandomMove(List<Move> moves)
     {
         int i = random.Next(0, moves.Count);
@@ -58,20 +103,42 @@ class AIControlScheme : IControlScheme
         Console.Write(string.Join(" ; ", strings) + "                              ");
     }
 
+    // Tar emot alla moves som är möjliga, och returnerar ett "smart" move.
+    // Denna metod sköter också bombplaceringen.
     private Move GetWeightedMove(List<Move> moves)
     {
         if (moves.Count == 1)
         {
+            // Återvändsgränd - placera ut en bomb
             moves[0].bomb = true;
             return moves[0];
         }
 
+        // Under normala omständigheter kan botten inte gå tillbaks 
+        // till positionen den precis varit på
         var lastPos = GetPreviousPosition();
-
         moves.RemoveAll(move => 
             move.NewX == lastPos.x && move.NewY == lastPos.y);
 
-        return GetRandomMove(moves);
+        var move = GetRandomMove(moves);
+
+        // Antal sprängbara block bredvid botten
+        var adjacentBlowableBlocks = GetAdjacentBlocks()
+            .Count(b => b is DestructibleBlock && b.HasCollision);
+
+        // Antal andra spelare bredvid botten
+        var adjacentPlayers = GetAdjacentPlayers().Count;
+
+        // Chans att sätta ut en bomb baserat på hur många 
+        // sprängbara block och spelare som finns bredvid
+        var bombChance = 
+            (adjacentBlowableBlocks * 0.2) +
+            (adjacentPlayers * 0.5); 
+
+        if (random.NextDouble() < bombChance)
+            move.bomb = true;
+
+        return move;
     }
 
     public (int dx, int dy, bool placedBomb) GetDirection(
@@ -83,7 +150,7 @@ class AIControlScheme : IControlScheme
         
         List<Move> moves = GetLegalMoves();
 
-        // bro sitter fast
+        // brorsan sitter fast
         if (moves.Count == 0)
             return (0, 0, false);
 
