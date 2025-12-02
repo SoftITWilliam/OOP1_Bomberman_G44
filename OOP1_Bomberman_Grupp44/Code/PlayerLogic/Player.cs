@@ -10,11 +10,34 @@ class Player : IDrawable
     public int Y { get; private set; }
     private int startX, startY;
     public int HP { get; private set; }
+
+    /*
+    1. KRAV 3: Computed properties
+    2. Våran bool IsAlive räknar ut huruvida spelaren lever baserat på dennes HP. Den returnerar true
+    så länge HP är större än 0. 
+    3. Vi använder en beräknad egenskap för att garantera ett logiskt tillstånd, eftersom vi inte vill att
+    IsAlive ska kunna vara true om HP är 0, eller tvärtom. Dessutom blir koden mer begriplig av att ha både
+    IsAlive och HP som egenskaper, eftersom det är tydligare att utanför klassen kontrollera bool:en istället
+    för värdet på HP.
+    */
+
     public bool IsAlive => HP > 0;
     public int BlastRange { get; private set; } = 1; //för att skicka in i bomb
     public int AvailableBombs = 1;
+
     private readonly IControlScheme controls;
-    public bool IsHuman => this.controls is not AIControlScheme;
+   
+    /*
+    1. KRAV 5: Beroendeinjektion
+    2. I konstruktorn för player injicerar vi ett kontrollschema IControlScheme som avgör hur spelaren
+    styrs. I HandleInput() anropas metoden GetDirection() på det injicerade kontrollschemat, vilket
+    kontrollerar spelarens handlingar. Beroende på vilket kontrollschema vi väljer kan detta styras
+    med tangentbordet eller automatiskt.
+    3. Användningen av injektion här tillåter oss att skilja åt mänskliga- och botspelare, utan att
+    skapa subtyper beroende på hur spelaren styrs. Detta gör också koden mer flexibel eftersom vi
+    möjliggör för att i framtiden kunna lägga till ytterligare kontrollscheman utan att behöva ändra
+    i Player-koden.
+    */
 
     public Player(int startX, int startY, IControlScheme controls)
     {

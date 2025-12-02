@@ -38,6 +38,16 @@ class Game
 
     private EmptySpace emptySpace = new EmptySpace();
 
+    /*
+    1. KRAV 4: Objektkomposition
+    2. Game har en egenskap av typen Level som håller koll på alla objekt (block, spelare, bomber, powerups)
+    som ligger på spelplanen. 
+    3. Detta gör vi för att förenkla Game-klassen, då Level har informationen om alla objekt på spelplanen,
+    men game är å andra sidan ansvarig för gameloopen, att rita ut banan och hantera interaktionen mellan
+    de olika objekten. Genom att ha Level som en separat klass minskar vi alltså Game-klassens ansvar
+    eftersom den inte behöver instansiera banan själv, och vi tillåts återställa banan separat från game.
+    */
+
     public Level Level { get; private set; }
 
     public Game(Level level)

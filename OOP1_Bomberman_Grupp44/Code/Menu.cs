@@ -18,7 +18,7 @@ class Menu
     ];
     private List<string> LevelNames = new List<string>()
     {
-        "Classic level", "Star Level", "Test level"
+        "Classic", "Star", "Test level(obs ta bort)", "Crosshair", "King of the hill"
     };
     private List<string> StartOptions = new List<string>()
     {
@@ -79,7 +79,8 @@ class Menu
     {
         List<Level> LevelTypes = new List<Level>()
         {
-            Level.ClassicLevel(), Level.StarLevel(), Level.TestLevel()
+            Level.ClassicLevel(), Level.StarLevel(), Level.TestLevel(),
+            Level.CrossHairLevel(), Level.KingOfTheHill()
         };
         Console.Clear();
         int index = MenuLoop("spelplan", LevelNames);

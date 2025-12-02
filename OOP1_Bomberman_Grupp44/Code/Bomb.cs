@@ -20,6 +20,15 @@ class Bomb : IDrawable
     public int X { get; }
     public int Y { get; }
 
+    /*
+    1. KRAV 2: Overloading av konstruktorer
+    2. Vi har två konstruktorer för bomber, där den ena tar emot en spelare och sparar ner denne som bombens ägare,
+    och använder sig av dennes X- och Y-position, och den andra tar istället emot positionen manuellt.
+    3. Detta använder vi oss av för att BombRainPowerup ska kunna skapa bomber som inte har en ägare. Denna användning
+    av overloading förenklar koden eftersom man kommer runt kravet på att ha en ägare till bomben, utan 
+    att behöva skapa en subtyp till bomb. 
+    */
+
     //konstruktor för bomb beroende av spelare:
     public Bomb(Player player, int BlastRange)
     {
