@@ -226,7 +226,7 @@ class Menu
         return game;
     }
 
-    public (Game? game, bool continuePlaying) GameOverMenu(Player winner, Game game)
+    public (Game? game, bool continuePlaying) GameOverMenu(Player? winner, Game game)
     {
         Console.Clear();
         Console.ForegroundColor = winner?.Color ?? ConsoleColor.DarkGray;
