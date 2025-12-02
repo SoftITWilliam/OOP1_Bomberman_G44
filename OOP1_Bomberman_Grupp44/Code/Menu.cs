@@ -107,7 +107,7 @@ class Menu
             (int x, int y) = level.GetCornerPosition(corner);
 
             return new Player(x, y,
-                controls: new KeyboardControlScheme(ControlType.Arrows))
+                controls: new KeyboardControlScheme(controlType))
             {
                 Name = name,
                 Color = color
@@ -187,10 +187,10 @@ class Menu
             string name2 = InputName();
             
             Player player2 = CreateHumanPlayer(
-                corner: Level.Corners.BottomRight, 
+                corner: Level.Corners.TopLeft, 
                 color: PlayerColors[1], 
                 name: name2,
-                controlType: ControlType.Arrows);
+                controlType: ControlType.Wasd);
 
             Player bot1 = CreateBotPlayer(
                 Level.Corners.TopRight, PlayerColors[2]);
@@ -216,10 +216,10 @@ class Menu
             string name2 = InputName();
             
             Player player2 = CreateHumanPlayer(
-                corner: Level.Corners.BottomRight, 
+                corner: Level.Corners.TopLeft, 
                 color: PlayerColors[1], 
                 name: name2,
-                controlType: ControlType.Arrows);
+                controlType: ControlType.Wasd);
 
             game.Level.AddPlayers(player1, player2);
         }
