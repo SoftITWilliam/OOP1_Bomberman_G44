@@ -12,6 +12,7 @@ public class BotNameGenerator
         "Bro",
         "BombGPT",
         "Crocodilo Bombardino",
+        "Bombini Guzini",
         "NullReferenceException",
         
         "BOT Gunilla", 
